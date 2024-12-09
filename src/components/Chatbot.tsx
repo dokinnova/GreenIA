@@ -5,7 +5,12 @@ import { MessageCircle, X, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './ui/use-toast';
 
-const Chatbot = () => {
+interface ChatbotProps {
+  onFilter: (keywords: string[]) => void;
+  onResetFilter: () => void;
+}
+
+const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{text: string, isUser: boolean}[]>([
     {text: "¡Hola! Soy tu asistente inmobiliario. ¿En qué puedo ayudarte?", isUser: false}
@@ -23,6 +28,11 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
+  const extractKeywords = (text: string): string[] => {
+    const keywords = ['ático', 'lujo', 'terraza', 'piso', 'reformado', 'céntrico', 'chalet', 'piscina', 'jardín'];
+    return keywords.filter(keyword => text.toLowerCase().includes(keyword));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -32,13 +42,18 @@ const Chatbot = () => {
     setMessages(prev => [...prev, {text: userMessage, isUser: true}]);
     setIsLoading(true);
 
+    // Extract keywords and filter properties
+    const keywords = extractKeywords(userMessage);
+    if (keywords.length > 0) {
+      onFilter(keywords);
+    } else {
+      onResetFilter();
+    }
+
     try {
-      console.log('Enviando mensaje:', userMessage);
       const { data, error } = await supabase.functions.invoke('chat', {
         body: { message: userMessage }
       });
-
-      console.log('Respuesta recibida:', data);
 
       if (error) {
         console.error('Error de Supabase:', error);

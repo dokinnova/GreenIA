@@ -9,11 +9,23 @@ interface PropertyCardProps {
   bathrooms: number;
   size: number;
   imageUrl: string;
+  isHighlighted?: boolean;
 }
 
-const PropertyCard = ({ title, price, location, bedrooms, bathrooms, size, imageUrl }: PropertyCardProps) => {
+const PropertyCard = ({ 
+  title, 
+  price, 
+  location, 
+  bedrooms, 
+  bathrooms, 
+  size, 
+  imageUrl,
+  isHighlighted = false 
+}: PropertyCardProps) => {
   return (
-    <Card className="property-card overflow-hidden">
+    <Card className={`property-card overflow-hidden transition-all duration-300 ${
+      isHighlighted ? 'ring-2 ring-primary scale-105' : ''
+    }`}>
       <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
       <div className="p-4">
         <h3 className="font-heading font-semibold text-lg mb-2">{title}</h3>

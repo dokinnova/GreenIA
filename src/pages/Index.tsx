@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropertyCard from '../components/PropertyCard';
 import Chatbot from '../components/Chatbot';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Search } from 'lucide-react';
 
-const properties = [
+export const properties = [
   {
     id: 1,
     title: "Ático de lujo con terraza",
@@ -14,7 +14,8 @@ const properties = [
     bedrooms: 3,
     bathrooms: 2,
     size: 120,
-    imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750"
+    imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    keywords: ["ático", "lujo", "terraza"]
   },
   {
     id: 2,
@@ -24,7 +25,8 @@ const properties = [
     bedrooms: 2,
     bathrooms: 1,
     size: 85,
-    imageUrl: "https://images.unsplash.com/photo-1493809842364-78817add7ffb"
+    imageUrl: "https://images.unsplash.com/photo-1493809842364-78817add7ffb",
+    keywords: ["piso", "reformado", "céntrico"]
   },
   {
     id: 3,
@@ -34,11 +36,17 @@ const properties = [
     bedrooms: 4,
     bathrooms: 3,
     size: 250,
-    imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9"
+    imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
+    keywords: ["chalet", "piscina", "jardín"]
   },
 ];
 
+export type Property = typeof properties[0];
+
 const Index = () => {
+  const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
+  const [filteredProperties, setFilteredProperties] = useState(properties);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -70,14 +78,38 @@ const Index = () => {
           Propiedades destacadas
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map((property) => (
-            <PropertyCard key={property.id} {...property} />
+          {filteredProperties.map((property) => (
+            <PropertyCard 
+              key={property.id} 
+              {...property} 
+              isHighlighted={property.id === highlightedPropertyId}
+            />
           ))}
         </div>
       </div>
 
-      {/* Chatbot */}
-      <Chatbot />
+      {/* Chatbot with filtering capabilities */}
+      <Chatbot 
+        onFilter={(keywords: string[]) => {
+          const filtered = properties.filter(property => 
+            keywords.some(keyword => 
+              property.keywords.includes(keyword.toLowerCase()) ||
+              property.title.toLowerCase().includes(keyword.toLowerCase()) ||
+              property.location.toLowerCase().includes(keyword.toLowerCase())
+            )
+          );
+          setFilteredProperties(filtered);
+          if (filtered.length === 1) {
+            setHighlightedPropertyId(filtered[0].id);
+          } else {
+            setHighlightedPropertyId(null);
+          }
+        }}
+        onResetFilter={() => {
+          setFilteredProperties(properties);
+          setHighlightedPropertyId(null);
+        }}
+      />
     </div>
   );
 };
