@@ -16,6 +16,22 @@ serve(async (req) => {
     console.log('Mensaje recibido:', message);
     console.log('Filtros activos:', activeFilters);
 
+    // Format active filters for the prompt
+    const formatFilters = (filters: any) => {
+      if (!filters) return 'ninguno';
+      
+      const parts = [];
+      if (filters.keywords?.length > 0) parts.push(`keywords: ${filters.keywords.join(', ')}`);
+      if (filters.bathrooms) parts.push(`baños: ${filters.bathrooms}`);
+      if (filters.bedrooms) parts.push(`dormitorios: ${filters.bedrooms}`);
+      if (filters.minPrice) parts.push(`precio mínimo: ${filters.minPrice}`);
+      if (filters.maxPrice) parts.push(`precio máximo: ${filters.maxPrice}`);
+      if (filters.minSize) parts.push(`tamaño mínimo: ${filters.minSize}`);
+      if (filters.maxSize) parts.push(`tamaño máximo: ${filters.maxSize}`);
+      
+      return parts.length > 0 ? parts.join(', ') : 'ninguno';
+    };
+
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OPENAI_API_KEY no está configurada');
@@ -52,7 +68,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         role: 'user',
-        content: `${message} (Filtros activos actuales: ${activeFilters?.join(', ') || 'ninguno'})`
+        content: `${message} (Filtros activos actuales: ${formatFilters(activeFilters)})`
       })
     });
 
@@ -75,7 +91,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         assistant_id: 'asst_AVYjAQEHXSViNb5wmMoAC6PS',
-        model: 'gpt-4-1106-preview', // Updated to use a compatible model
+        model: 'gpt-4-1106-preview',
         instructions: "Eres un asistente inmobiliario experto. Ayuda a los usuarios a encontrar propiedades basándote en sus necesidades y preferencias. Ten en cuenta los filtros activos que se te proporcionan."
       })
     });
