@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from '@supabase/supabase-js'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -44,6 +43,7 @@ serve(async (req) => {
       },
     )
   } catch (error) {
+    console.error('Error in chat function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
