@@ -9,8 +9,8 @@ interface PropertyCardProps {
   bedrooms: number;
   bathrooms: number;
   size: number;
-  imageUrl: string;
-  hasGarden: boolean;
+  image_url: string | null;
+  has_garden: boolean;
   isHighlighted?: boolean;
 }
 
@@ -21,15 +21,15 @@ const PropertyCard = ({
   bedrooms, 
   bathrooms, 
   size, 
-  imageUrl,
-  hasGarden,
+  image_url,
+  has_garden,
   isHighlighted = false 
 }: PropertyCardProps) => {
   return (
     <Card className={`property-card overflow-hidden transition-all duration-300 ${
       isHighlighted ? 'ring-2 ring-primary scale-105' : ''
     }`}>
-      <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
+      <img src={image_url || '/placeholder.svg'} alt={title} className="w-full h-48 object-cover" />
       <div className="p-4">
         <h3 className="font-heading font-semibold text-lg mb-2">{title}</h3>
         <p className="text-2xl font-bold text-primary mb-2">€{price.toLocaleString()}</p>
@@ -38,7 +38,7 @@ const PropertyCard = ({
           <span>{bedrooms} hab.</span>
           <span>{bathrooms} baños</span>
           <span>{size} m²</span>
-          {hasGarden && (
+          {has_garden && (
             <span className="flex items-center gap-1">
               <Trees className="h-4 w-4" />
               Jardín

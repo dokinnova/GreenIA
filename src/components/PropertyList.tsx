@@ -32,7 +32,6 @@ const PropertyList = ({
           <PropertyCard 
             key={property.id} 
             {...property} 
-            imageUrl={property.image_url || ''}
             isHighlighted={property.id === highlightedPropertyId}
           />
         ))}

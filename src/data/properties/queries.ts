@@ -30,7 +30,7 @@ export const createProperty = async (property: Omit<Property, 'id' | 'created_at
   return data;
 };
 
-export const updateProperty = async (id: number, updates: Partial<Property>) => {
+export const updateProperty = async (id: number, updates: Partial<Omit<Property, 'id'>>) => {
   const { data, error } = await supabase
     .from('properties')
     .update(updates)
