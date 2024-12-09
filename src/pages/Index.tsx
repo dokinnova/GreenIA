@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, Map } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import PropertyList from '@/components/PropertyList';
 import Chatbot, { PropertyFilters } from '@/components/Chatbot';
@@ -11,6 +11,7 @@ import type { Property } from '@/data/properties/types';
 import { filterProperties } from '@/utils/propertyFilters';
 import Footer from '@/components/Footer';
 import Testimonials from '@/components/Testimonials';
+import PropertyMap from '@/components/PropertyMap';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ const Index = () => {
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const { toast } = useToast();
   const propertiesPerPage = 12;
 
@@ -111,20 +113,31 @@ const Index = () => {
             Propiedades destacadas
           </h2>
           
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Añadir Propiedad
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
-              <DialogHeader>
-                <DialogTitle>Añadir nueva propiedad</DialogTitle>
-              </DialogHeader>
-              <AddPropertyForm onSuccess={() => setDialogOpen(false)} />
-            </DialogContent>
-          </Dialog>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowMap(true)}
+              className="flex items-center gap-2"
+            >
+              <Map className="h-4 w-4" />
+              Ver en Mapa
+            </Button>
+            
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Añadir Propiedad
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>Añadir nueva propiedad</DialogTitle>
+                </DialogHeader>
+                <AddPropertyForm onSuccess={() => setDialogOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
         
         <PropertyList
@@ -135,6 +148,13 @@ const Index = () => {
           onPageChange={setCurrentPage}
         />
       </div>
+
+      {showMap && (
+        <PropertyMap
+          properties={filteredProperties}
+          onClose={() => setShowMap(false)}
+        />
+      )}
 
       <Testimonials />
 
