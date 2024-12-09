@@ -51,15 +51,20 @@ const Index = () => {
   const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
 
   const handleFilter = (filters: PropertyFilters) => {
+    console.log('Aplicando filtros:', filters); // Para debugging
     const filtered = properties.filter(property => {
-      if (filters.bathrooms && property.bathrooms !== filters.bathrooms) {
+      // Filtrar por número de baños
+      if (filters.bathrooms !== undefined && property.bathrooms !== filters.bathrooms) {
+        console.log('Propiedad descartada por baños:', property.title, property.bathrooms, filters.bathrooms);
         return false;
       }
 
-      if (filters.bedrooms && property.bedrooms !== filters.bedrooms) {
+      // Filtrar por número de habitaciones
+      if (filters.bedrooms !== undefined && property.bedrooms !== filters.bedrooms) {
         return false;
       }
 
+      // Filtrar por precio
       if (filters.minPrice && property.price < filters.minPrice) {
         return false;
       }
@@ -67,6 +72,7 @@ const Index = () => {
         return false;
       }
 
+      // Filtrar por tamaño
       if (filters.minSize && property.size < filters.minSize) {
         return false;
       }
@@ -74,6 +80,7 @@ const Index = () => {
         return false;
       }
 
+      // Filtrar por palabras clave
       if (filters.keywords.length > 0) {
         return filters.keywords.some(keyword => 
           property.keywords?.includes(keyword.toLowerCase()) ||
@@ -86,6 +93,7 @@ const Index = () => {
       return true;
     });
 
+    console.log('Propiedades filtradas:', filtered.length); // Para debugging
     setFilteredProperties(filtered);
     setCurrentPage(1);
     
@@ -93,6 +101,15 @@ const Index = () => {
       setHighlightedPropertyId(filtered[0].id);
     } else {
       setHighlightedPropertyId(null);
+    }
+
+    // Mostrar mensaje si no hay resultados
+    if (filtered.length === 0) {
+      toast({
+        title: "Sin resultados",
+        description: "No se encontraron propiedades que coincidan con tus criterios de búsqueda.",
+        variant: "destructive"
+      });
     }
   };
 

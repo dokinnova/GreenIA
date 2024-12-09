@@ -5,7 +5,7 @@ export const extractPropertyFilters = (text: string, currentFilters: PropertyFil
   const newFilters: PropertyFilters = { ...currentFilters };
   
   // Extraer número de baños
-  const bathroomsMatch = normalizedText.match(/(\d+)\s*(baños?|aseos?|wc)/);
+  const bathroomsMatch = normalizedText.match(/(\d+)\s*(baños?|aseos?|wc|baño)/);
   if (bathroomsMatch) {
     newFilters.bathrooms = parseInt(bathroomsMatch[1]);
   }
@@ -66,5 +66,6 @@ export const extractPropertyFilters = (text: string, currentFilters: PropertyFil
 
   newFilters.keywords = Array.from(newKeywords);
   
+  console.log('Filtros extraídos:', newFilters); // Para debugging
   return newFilters;
 };
