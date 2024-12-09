@@ -28,13 +28,13 @@ const Index = () => {
 
   const handleFilter = (filters: PropertyFilters) => {
     const filtered = properties.filter(property => {
-      // Filtrar por número de baños
-      if (filters.bathrooms && property.bathrooms < filters.bathrooms) {
+      // Filtrar por número exacto de baños
+      if (filters.bathrooms && property.bathrooms !== filters.bathrooms) {
         return false;
       }
 
-      // Filtrar por número de habitaciones
-      if (filters.bedrooms && property.bedrooms < filters.bedrooms) {
+      // Filtrar por número exacto de habitaciones
+      if (filters.bedrooms && property.bedrooms !== filters.bedrooms) {
         return false;
       }
 
@@ -48,6 +48,9 @@ const Index = () => {
 
       // Filtrar por tamaño
       if (filters.minSize && property.size < filters.minSize) {
+        return false;
+      }
+      if (filters.maxSize && property.size > filters.maxSize) {
         return false;
       }
 
@@ -74,7 +77,6 @@ const Index = () => {
     }
   };
 
-  // ... keep existing code (return JSX with updated onFilter prop)
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
