@@ -75,6 +75,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         assistant_id: 'asst_AVYjAQEHXSViNb5wmMoAC6PS',
+        model: 'gpt-4-1106-preview', // Updated to use a compatible model
         instructions: "Eres un asistente inmobiliario experto. Ayuda a los usuarios a encontrar propiedades basándote en sus necesidades y preferencias. Ten en cuenta los filtros activos que se te proporcionan."
       })
     });
