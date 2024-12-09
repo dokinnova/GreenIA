@@ -19,31 +19,78 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY no está configurada')
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Crear un thread si no existe
+    const threadResponse = await fetch('https://api.openai.com/v1/threads', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v1'
+      }
+    });
+
+    const thread = await threadResponse.json();
+
+    // Añadir el mensaje al thread
+    await fetch(`https://api.openai.com/v1/threads/${thread.id}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v1'
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'Eres un asistente inmobiliario experto. Ayudas a los usuarios a encontrar propiedades y respondes preguntas sobre el mercado inmobiliario español.'
-          },
-          {
-            role: 'user',
-            content: message
-          }
-        ],
-      }),
-    })
+        role: 'user',
+        content: message
+      })
+    });
 
-    const data = await response.json()
-    
+    // Ejecutar el asistente
+    const runResponse = await fetch(`https://api.openai.com/v1/threads/${thread.id}/runs`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v1'
+      },
+      body: JSON.stringify({
+        assistant_id: 'ASSISTANT_ID', // Aquí deberás reemplazar con tu ID de asistente
+      })
+    });
+
+    const run = await runResponse.json();
+
+    // Esperar a que el asistente termine de procesar
+    let runStatus;
+    do {
+      const statusResponse = await fetch(`https://api.openai.com/v1/threads/${thread.id}/runs/${run.id}`, {
+        headers: {
+          'Authorization': `Bearer ${openAIApiKey}`,
+          'OpenAI-Beta': 'assistants=v1'
+        }
+      });
+      runStatus = await statusResponse.json();
+      if (runStatus.status === 'failed') {
+        throw new Error('La ejecución del asistente falló');
+      }
+      if (runStatus.status !== 'completed') {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar 1 segundo antes de verificar de nuevo
+      }
+    } while (runStatus.status !== 'completed');
+
+    // Obtener los mensajes
+    const messagesResponse = await fetch(`https://api.openai.com/v1/threads/${thread.id}/messages`, {
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'OpenAI-Beta': 'assistants=v1'
+      }
+    });
+
+    const messages = await messagesResponse.json();
+    const lastMessage = messages.data[0]; // El mensaje más reciente
+
     return new Response(
-      JSON.stringify({ reply: data.choices[0].message.content }),
+      JSON.stringify({ reply: lastMessage.content[0].text.value }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     )
   } catch (error) {
