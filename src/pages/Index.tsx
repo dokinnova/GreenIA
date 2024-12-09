@@ -8,6 +8,7 @@ import PropertyList from '@/components/PropertyList';
 import Chatbot, { PropertyFilters } from '@/components/Chatbot';
 import { fetchProperties } from '@/data/properties/queries';
 import type { Property } from '@/data/properties/types';
+import { filterProperties } from '@/utils/propertyFilters';
 import {
   Dialog,
   DialogContent,
@@ -45,72 +46,8 @@ const Index = () => {
     return <div className="flex items-center justify-center min-h-screen">Error al cargar las propiedades</div>;
   }
 
-  const indexOfLastProperty = currentPage * propertiesPerPage;
-  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
-  const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
-  const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
-
   const handleFilter = (filters: PropertyFilters) => {
-    console.log('Aplicando filtros:', filters);
-    
-    const filtered = properties.filter(property => {
-      // Filtrar por número de baños
-      if (filters.bathrooms !== undefined) {
-        console.log(`Comparando baños para propiedad ${property.id}:`, {
-          propiedad: property.bathrooms,
-          filtro: filters.bathrooms,
-          coincide: property.bathrooms === filters.bathrooms
-        });
-        if (property.bathrooms !== filters.bathrooms) {
-          return false;
-        }
-      }
-
-      // Filtrar por número de habitaciones
-      if (filters.bedrooms !== undefined) {
-        console.log(`Comparando habitaciones para propiedad ${property.id}:`, {
-          propiedad: property.bedrooms,
-          filtro: filters.bedrooms,
-          coincide: property.bedrooms === filters.bedrooms
-        });
-        if (property.bedrooms !== filters.bedrooms) {
-          return false;
-        }
-      }
-
-      // Filtrar por precio
-      if (filters.minPrice && property.price < filters.minPrice) {
-        return false;
-      }
-      if (filters.maxPrice && property.price > filters.maxPrice) {
-        return false;
-      }
-
-      // Filtrar por tamaño
-      if (filters.minSize && property.size < filters.minSize) {
-        return false;
-      }
-      if (filters.maxSize && property.size > filters.maxSize) {
-        return false;
-      }
-
-      // Filtrar por palabras clave
-      if (filters.keywords && filters.keywords.length > 0) {
-        const matchesKeywords = filters.keywords.some(keyword => 
-          property.keywords?.includes(keyword.toLowerCase()) ||
-          property.title.toLowerCase().includes(keyword.toLowerCase()) ||
-          property.location.toLowerCase().includes(keyword.toLowerCase()) ||
-          (keyword === 'jardín' && property.has_garden)
-        );
-        if (!matchesKeywords) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-
-    console.log(`Se encontraron ${filtered.length} propiedades que coinciden con los filtros`);
+    const filtered = filterProperties(properties, filters);
     setFilteredProperties(filtered);
     setCurrentPage(1);
     
@@ -120,7 +57,6 @@ const Index = () => {
       setHighlightedPropertyId(null);
     }
 
-    // Mostrar mensaje si no hay resultados
     if (filtered.length === 0) {
       toast({
         title: "Sin resultados",
@@ -129,6 +65,11 @@ const Index = () => {
       });
     }
   };
+
+  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
+  const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
+  const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -140,7 +81,6 @@ const Index = () => {
           backgroundPosition: 'center'
         }}
       >
-        {/* Overlay oscuro para mejorar la legibilidad del texto */}
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         
         <div className="container mx-auto text-center relative z-10">
