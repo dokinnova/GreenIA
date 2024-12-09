@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { MessageCircle, X } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,21 +10,37 @@ const Chatbot = () => {
     {text: "¡Hola! Soy tu asistente inmobiliario. ¿En qué puedo ayudarte?", isUser: false}
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
     
-    setMessages(prev => [...prev, {text: input, isUser: true}]);
+    const userMessage = input;
     setInput("");
-    
-    // Aquí se conectaría con el agente GPT
-    setTimeout(() => {
+    setMessages(prev => [...prev, {text: userMessage, isUser: true}]);
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { message: userMessage }
+      });
+
+      if (error) throw error;
+
       setMessages(prev => [...prev, {
-        text: "Por el momento soy un chatbot de demostración. Pronto estaré conectado con un agente GPT para ayudarte mejor.",
+        text: data.reply,
         isUser: false
       }]);
-    }, 1000);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, {
+        text: "Lo siento, ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.",
+        isUser: false
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -63,6 +80,7 @@ const Chatbot = () => {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribe tu mensaje..."
               className="w-full p-2 border rounded-md"
+              disabled={isLoading}
             />
           </form>
         </Card>
