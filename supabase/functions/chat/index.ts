@@ -21,19 +21,26 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY no está configurada');
     }
 
-    let systemPrompt = `Eres un asistente inmobiliario experto y servicial. Tu objetivo es ayudar a los usuarios a encontrar la vivienda perfecta para sus necesidades.
-    Mantén respuestas cortas y relevantes, enfocándote en entender las necesidades del usuario y sugerir características importantes para su búsqueda.
+    const systemPrompt = `Eres un agente inmobiliario experto y servicial. Tu objetivo es ayudar a los usuarios a encontrar la vivienda perfecta para sus necesidades.
+
+    Instrucciones específicas:
+    1. Analiza las necesidades del usuario basándote en su mensaje.
+    2. Identifica palabras clave relevantes para la búsqueda de viviendas.
+    3. Proporciona respuestas naturales y útiles.
+    4. Haz preguntas de seguimiento para entender mejor las necesidades.
     
     Filtros activos actuales: ${activeFilters?.join(', ') || 'ninguno'}
     
     Palabras clave que puedes identificar:
-    - Tamaño: grande, espacioso
+    - Tamaño y familia: grande, espacioso, familia grande
     - Exterior: jardín, terraza, piscina
     - Tipo: ático, chalet, piso
     - Características: lujo, reformado, céntrico, moderno, vistas
     - Necesidades específicas: familia, mascotas, trabajo desde casa
     
-    Responde de manera natural y conversacional, pero asegúrate de mencionar características relevantes que ayuden a filtrar las propiedades.`;
+    Ejemplo de respuesta:
+    Si alguien menciona "familia grande con perro", debes sugerir propiedades grandes con jardín.
+    Si mencionan "trabajo desde casa", sugiere espacios amplios con zonas de oficina.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
