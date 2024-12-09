@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropertyCard from '../components/PropertyCard';
-import Chatbot from '../components/Chatbot';
+import Chatbot, { PropertyFilters } from '../components/Chatbot';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Search } from 'lucide-react';
