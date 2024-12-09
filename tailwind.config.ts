@@ -22,8 +22,12 @@ export default {
         primary: {
           DEFAULT: "#1a365d",
           hover: "#2d5a88",
+          foreground: "#ffffff", // Adding white text color for primary buttons
         },
-        secondary: "#e2e8f0",
+        secondary: {
+          DEFAULT: "#e2e8f0",
+          foreground: "#1a365d", // Dark text for secondary buttons
+        },
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
