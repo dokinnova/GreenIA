@@ -2,16 +2,25 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import PropertyList from '@/components/PropertyList';
 import Chatbot, { PropertyFilters } from '@/components/Chatbot';
 import { fetchProperties } from '@/data/properties/queries';
 import type { Property } from '@/data/properties/types';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { AddPropertyForm } from '@/components/AddPropertyForm';
 
 const Index = () => {
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
   const propertiesPerPage = 12;
 
@@ -67,7 +76,7 @@ const Index = () => {
 
       if (filters.keywords.length > 0) {
         return filters.keywords.some(keyword => 
-          property.keywords.includes(keyword.toLowerCase()) ||
+          property.keywords?.includes(keyword.toLowerCase()) ||
           property.title.toLowerCase().includes(keyword.toLowerCase()) ||
           property.location.toLowerCase().includes(keyword.toLowerCase()) ||
           (keyword === 'jardín' && property.has_garden)
@@ -111,9 +120,26 @@ const Index = () => {
       </div>
 
       <div className="container mx-auto py-12">
-        <h2 className="font-heading text-2xl font-semibold mb-6">
-          Propiedades destacadas
-        </h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="font-heading text-2xl font-semibold">
+            Propiedades destacadas
+          </h2>
+          
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Añadir Propiedad
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Añadir nueva propiedad</DialogTitle>
+              </DialogHeader>
+              <AddPropertyForm onSuccess={() => setDialogOpen(false)} />
+            </DialogContent>
+          </Dialog>
+        </div>
         
         <PropertyList
           properties={currentProperties}
