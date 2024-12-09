@@ -122,8 +122,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-primary text-white py-20">
-        <div className="container mx-auto text-center">
+      <div 
+        className="relative py-20 text-white"
+        style={{
+          backgroundImage: 'url("https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=2000")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        {/* Overlay oscuro para mejorar la legibilidad del texto */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        
+        <div className="container mx-auto text-center relative z-10">
           <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6">
             Encuentra tu hogar ideal
           </h1>
