@@ -5,8 +5,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Reemplaza este ID con el ID de tu asistente de OpenAI
-const ASSISTANT_ID = 'COLOCA_AQUI_TU_ID_DE_ASISTENTE';
+// ID del asistente de OpenAI
+const ASSISTANT_ID = 'asst_AVYjAQEHXSViNb5wmMoAC6PS';
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -57,7 +57,7 @@ serve(async (req) => {
         'OpenAI-Beta': 'assistants=v1'
       },
       body: JSON.stringify({
-        assistant_id: ASSISTANT_ID, // Aquí se usa el ID del asistente definido arriba
+        assistant_id: ASSISTANT_ID,
       })
     });
 
