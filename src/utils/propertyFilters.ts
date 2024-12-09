@@ -78,6 +78,7 @@ export const filterProperties = (properties: Property[], filters: PropertyFilter
   console.log('Total de propiedades antes del filtrado:', properties.length);
 
   const filtered = properties.filter(property => {
+    // Inicializamos matches como true
     let matches = true;
 
     // Filtrar por número de baños
@@ -87,50 +88,51 @@ export const filterProperties = (properties: Property[], filters: PropertyFilter
         filtro: filters.bathrooms,
         coincide: property.bathrooms === filters.bathrooms
       });
-      if (property.bathrooms !== filters.bathrooms) {
-        matches = false;
-      }
+      matches = matches && property.bathrooms === filters.bathrooms;
     }
 
     // Filtrar por número de habitaciones
     if (matches && filters.bedrooms !== undefined) {
-      if (property.bedrooms !== filters.bedrooms) {
-        matches = false;
-      }
+      matches = matches && property.bedrooms === filters.bedrooms;
     }
 
     // Filtrar por precio
-    if (matches && filters.minPrice && property.price < filters.minPrice) {
-      matches = false;
+    if (matches && filters.minPrice !== undefined) {
+      matches = matches && property.price >= filters.minPrice;
     }
-    if (matches && filters.maxPrice && property.price > filters.maxPrice) {
-      matches = false;
+    if (matches && filters.maxPrice !== undefined) {
+      matches = matches && property.price <= filters.maxPrice;
     }
 
     // Filtrar por tamaño
-    if (matches && filters.minSize && property.size < filters.minSize) {
-      matches = false;
+    if (matches && filters.minSize !== undefined) {
+      matches = matches && property.size >= filters.minSize;
     }
-    if (matches && filters.maxSize && property.size > filters.maxSize) {
-      matches = false;
+    if (matches && filters.maxSize !== undefined) {
+      matches = matches && property.size <= filters.maxSize;
     }
 
     // Filtrar por palabras clave
     if (matches && filters.keywords && filters.keywords.length > 0) {
-      const matchesKeywords = filters.keywords.some(keyword => 
-        property.keywords?.includes(keyword.toLowerCase()) ||
-        property.title.toLowerCase().includes(keyword.toLowerCase()) ||
-        property.location.toLowerCase().includes(keyword.toLowerCase()) ||
+      const propertyText = [
+        property.title.toLowerCase(),
+        property.location.toLowerCase(),
+        ...(property.keywords?.map(k => k.toLowerCase()) || [])
+      ].join(' ');
+
+      // Una propiedad coincide si contiene al menos una de las palabras clave
+      const keywordMatches = filters.keywords.some(keyword => 
+        propertyText.includes(keyword.toLowerCase()) ||
         (keyword === 'jardín' && property.has_garden)
       );
-      if (!matchesKeywords) {
-        matches = false;
-      }
+      
+      matches = matches && keywordMatches;
     }
 
     return matches;
   });
 
   console.log(`Se encontraron ${filtered.length} propiedades que coinciden con los filtros`);
+  filtered.forEach(p => console.log('Propiedad coincidente:', { id: p.id, title: p.title }));
   return filtered;
 };
