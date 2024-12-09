@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card } from './ui/card';
+import { Tree } from 'lucide-react';
 
 interface PropertyCardProps {
   title: string;
@@ -9,6 +10,7 @@ interface PropertyCardProps {
   bathrooms: number;
   size: number;
   imageUrl: string;
+  hasGarden: boolean;
   isHighlighted?: boolean;
 }
 
@@ -20,6 +22,7 @@ const PropertyCard = ({
   bathrooms, 
   size, 
   imageUrl,
+  hasGarden,
   isHighlighted = false 
 }: PropertyCardProps) => {
   return (
@@ -35,6 +38,12 @@ const PropertyCard = ({
           <span>{bedrooms} hab.</span>
           <span>{bathrooms} baños</span>
           <span>{size} m²</span>
+          {hasGarden && (
+            <span className="flex items-center gap-1">
+              <Tree className="h-4 w-4" />
+              Jardín
+            </span>
+          )}
         </div>
       </div>
     </Card>
