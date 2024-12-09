@@ -4,10 +4,12 @@ export const extractPropertyFilters = (text: string, currentFilters: PropertyFil
   const normalizedText = text.toLowerCase();
   const newFilters: PropertyFilters = { ...currentFilters };
   
-  // Extraer número de baños
-  const bathroomsMatch = normalizedText.match(/(\d+)\s*(baños?|aseos?|wc|baño)/);
+  // Extraer número de baños con expresiones más específicas
+  const bathroomsMatch = normalizedText.match(/(\d+)\s*(baños?|aseos?|wc|cuarto de baño)/);
   if (bathroomsMatch) {
-    newFilters.bathrooms = parseInt(bathroomsMatch[1]);
+    const numBathrooms = parseInt(bathroomsMatch[1]);
+    console.log('Número de baños detectado:', numBathrooms);
+    newFilters.bathrooms = numBathrooms;
   }
 
   // Extraer número de habitaciones
@@ -54,7 +56,8 @@ export const extractPropertyFilters = (text: string, currentFilters: PropertyFil
     'reformado': ['reformado'],
     'céntrico': ['céntrico'],
     'moderno': ['moderno'],
-    'vistas': ['vistas']
+    'vistas': ['vistas'],
+    'casa': ['casa']
   };
 
   const newKeywords = new Set<string>(newFilters.keywords || []);
@@ -66,6 +69,6 @@ export const extractPropertyFilters = (text: string, currentFilters: PropertyFil
 
   newFilters.keywords = Array.from(newKeywords);
   
-  console.log('Filtros extraídos:', newFilters); // Para debugging
+  console.log('Filtros extraídos:', newFilters);
   return newFilters;
 };

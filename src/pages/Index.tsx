@@ -56,16 +56,26 @@ const Index = () => {
     const filtered = properties.filter(property => {
       // Filtrar por número de baños
       if (filters.bathrooms !== undefined) {
-        console.log(`Comparando baños: propiedad ${property.bathrooms} vs filtro ${filters.bathrooms}`);
+        console.log(`Comparando baños para propiedad ${property.id}:`, {
+          propiedad: property.bathrooms,
+          filtro: filters.bathrooms,
+          coincide: property.bathrooms === filters.bathrooms
+        });
         if (property.bathrooms !== filters.bathrooms) {
-          console.log(`Descartando propiedad ${property.title} por número de baños`);
           return false;
         }
       }
 
       // Filtrar por número de habitaciones
-      if (filters.bedrooms !== undefined && property.bedrooms !== filters.bedrooms) {
-        return false;
+      if (filters.bedrooms !== undefined) {
+        console.log(`Comparando habitaciones para propiedad ${property.id}:`, {
+          propiedad: property.bedrooms,
+          filtro: filters.bedrooms,
+          coincide: property.bedrooms === filters.bedrooms
+        });
+        if (property.bedrooms !== filters.bedrooms) {
+          return false;
+        }
       }
 
       // Filtrar por precio
@@ -85,7 +95,7 @@ const Index = () => {
       }
 
       // Filtrar por palabras clave
-      if (filters.keywords.length > 0) {
+      if (filters.keywords && filters.keywords.length > 0) {
         const matchesKeywords = filters.keywords.some(keyword => 
           property.keywords?.includes(keyword.toLowerCase()) ||
           property.title.toLowerCase().includes(keyword.toLowerCase()) ||
