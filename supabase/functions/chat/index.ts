@@ -21,65 +21,92 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY no está configurada');
     }
 
-    const systemPrompt = `Eres un agente inmobiliario experto y servicial. Tu objetivo es ayudar a los usuarios a encontrar la vivienda perfecta para sus necesidades.
-
-    Instrucciones específicas:
-    1. Analiza las necesidades del usuario basándote en su mensaje.
-    2. Identifica palabras clave relevantes para la búsqueda de viviendas.
-    3. Proporciona respuestas naturales y útiles.
-    4. Haz preguntas de seguimiento para entender mejor las necesidades.
-    
-    Filtros activos actuales: ${activeFilters?.join(', ') || 'ninguno'}
-    
-    Palabras clave que puedes identificar:
-    - Tamaño y familia: grande, espacioso, familia grande
-    - Exterior: jardín, terraza, piscina
-    - Tipo: ático, chalet, piso
-    - Características: lujo, reformado, céntrico, moderno, vistas
-    - Necesidades específicas: familia, mascotas, trabajo desde casa
-    
-    Ejemplo de respuesta:
-    Si alguien menciona "familia grande con perro", debes sugerir propiedades grandes con jardín.
-    Si mencionan "trabajo desde casa", sugiere espacios amplios con zonas de oficina.`;
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Create a thread if it doesn't exist
+    const threadResponse = await fetch('https://api.openai.com/v1/threads', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v1'
+      }
+    });
+
+    if (!threadResponse.ok) {
+      throw new Error('Error creating thread');
+    }
+
+    const thread = await threadResponse.json();
+    console.log('Thread created:', thread);
+
+    // Add the message to the thread
+    const messageResponse = await fetch(`https://api.openai.com/v1/threads/${thread.id}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v1'
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: systemPrompt
-          },
-          {
-            role: 'user',
-            content: message
-          }
-        ],
-        temperature: 0.7
+        role: 'user',
+        content: `${message} (Filtros activos actuales: ${activeFilters?.join(', ') || 'ninguno'})`
       })
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('Error de OpenAI:', error);
-      throw new Error(`Error en la respuesta de OpenAI: ${error}`);
+    if (!messageResponse.ok) {
+      throw new Error('Error adding message to thread');
     }
 
-    const data = await response.json();
-    console.log('Respuesta recibida de OpenAI:', data);
+    // Run the assistant
+    const runResponse = await fetch(`https://api.openai.com/v1/threads/${thread.id}/runs`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v1'
+      },
+      body: JSON.stringify({
+        assistant_id: 'asst_AVYjAQEHXSViNb5wmMoAC6PS'
+      })
+    });
 
-    const reply = data.choices[0].message.content;
-    console.log('Respuesta procesada:', reply);
+    if (!runResponse.ok) {
+      throw new Error('Error starting assistant run');
+    }
 
-    return new Response(
-      JSON.stringify({ reply }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    const run = await runResponse.json();
+    console.log('Run started:', run);
+
+    // Poll for the run completion
+    let runStatus = await checkRunStatus(run.id, thread.id, openAIApiKey);
+    while (runStatus.status === 'in_progress' || runStatus.status === 'queued') {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      runStatus = await checkRunStatus(run.id, thread.id, openAIApiKey);
+    }
+
+    if (runStatus.status === 'completed') {
+      // Get the assistant's response
+      const messagesResponse = await fetch(`https://api.openai.com/v1/threads/${thread.id}/messages`, {
+        headers: {
+          'Authorization': `Bearer ${openAIApiKey}`,
+          'OpenAI-Beta': 'assistants=v1'
+        }
+      });
+
+      if (!messagesResponse.ok) {
+        throw new Error('Error retrieving messages');
+      }
+
+      const messages = await messagesResponse.json();
+      const lastMessage = messages.data[0];
+      console.log('Assistant response:', lastMessage);
+
+      return new Response(
+        JSON.stringify({ reply: lastMessage.content[0].text.value }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } else {
+      throw new Error(`Run failed with status: ${runStatus.status}`);
+    }
 
   } catch (error) {
     console.error('Error en chat function:', error);
@@ -92,3 +119,18 @@ serve(async (req) => {
     );
   }
 });
+
+async function checkRunStatus(runId: string, threadId: string, apiKey: string) {
+  const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'OpenAI-Beta': 'assistants=v1'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Error checking run status');
+  }
+
+  return await response.json();
+}
