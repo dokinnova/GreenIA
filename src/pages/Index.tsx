@@ -51,12 +51,16 @@ const Index = () => {
   const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
 
   const handleFilter = (filters: PropertyFilters) => {
-    console.log('Aplicando filtros:', filters); // Para debugging
+    console.log('Aplicando filtros:', filters);
+    
     const filtered = properties.filter(property => {
       // Filtrar por número de baños
-      if (filters.bathrooms !== undefined && property.bathrooms !== filters.bathrooms) {
-        console.log('Propiedad descartada por baños:', property.title, property.bathrooms, filters.bathrooms);
-        return false;
+      if (filters.bathrooms !== undefined) {
+        console.log(`Comparando baños: propiedad ${property.bathrooms} vs filtro ${filters.bathrooms}`);
+        if (property.bathrooms !== filters.bathrooms) {
+          console.log(`Descartando propiedad ${property.title} por número de baños`);
+          return false;
+        }
       }
 
       // Filtrar por número de habitaciones
@@ -82,18 +86,21 @@ const Index = () => {
 
       // Filtrar por palabras clave
       if (filters.keywords.length > 0) {
-        return filters.keywords.some(keyword => 
+        const matchesKeywords = filters.keywords.some(keyword => 
           property.keywords?.includes(keyword.toLowerCase()) ||
           property.title.toLowerCase().includes(keyword.toLowerCase()) ||
           property.location.toLowerCase().includes(keyword.toLowerCase()) ||
           (keyword === 'jardín' && property.has_garden)
         );
+        if (!matchesKeywords) {
+          return false;
+        }
       }
 
       return true;
     });
 
-    console.log('Propiedades filtradas:', filtered.length); // Para debugging
+    console.log(`Se encontraron ${filtered.length} propiedades que coinciden con los filtros`);
     setFilteredProperties(filtered);
     setCurrentPage(1);
     
