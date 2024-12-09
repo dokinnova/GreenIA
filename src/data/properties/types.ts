@@ -6,7 +6,19 @@ export interface Property {
   bedrooms: number;
   bathrooms: number;
   size: number;
-  imageUrl: string;
+  image_url: string | null;
   keywords: string[];
-  hasGarden: boolean;
+  has_garden: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PropertyFilters {
+  minPrice?: number;
+  maxPrice?: number;
+  minSize?: number;
+  maxSize?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  keywords: string[];
 }

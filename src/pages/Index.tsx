@@ -1,49 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import PropertyCard from '../components/PropertyCard';
-import Chatbot, { PropertyFilters } from '../components/Chatbot';
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { properties, generateImagesForProperties } from '../data/properties';
-import { useToast } from '../components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
+import PropertyList from '@/components/PropertyList';
+import Chatbot, { PropertyFilters } from '@/components/Chatbot';
+import { fetchProperties } from '@/data/properties/queries';
+import type { Property } from '@/data/properties/types';
 
 const Index = () => {
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
-  const [filteredProperties, setFilteredProperties] = useState(properties);
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   const propertiesPerPage = 12;
 
-  useEffect(() => {
-    const generateImages = async () => {
-      try {
-        await generateImagesForProperties();
-        toast({
-          title: "Imágenes generadas",
-          description: "Las imágenes de las propiedades han sido actualizadas.",
-        });
-      } catch (error) {
-        console.error('Error generating images:', error);
-        toast({
-          title: "Error",
-          description: "Hubo un error al generar las imágenes.",
-          variant: "destructive",
-        });
-      }
-    };
+  const { data: properties = [], isLoading, error } = useQuery({
+    queryKey: ['properties'],
+    queryFn: fetchProperties,
+  });
 
-    generateImages();
-  }, []);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
 
-  // Calcular propiedades para la página actual
+  React.useEffect(() => {
+    if (properties) {
+      setFilteredProperties(properties);
+    }
+  }, [properties]);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Cargando propiedades...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen">Error al cargar las propiedades</div>;
+  }
+
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
   const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
@@ -51,17 +43,14 @@ const Index = () => {
 
   const handleFilter = (filters: PropertyFilters) => {
     const filtered = properties.filter(property => {
-      // Filtrar por número exacto de baños
       if (filters.bathrooms && property.bathrooms !== filters.bathrooms) {
         return false;
       }
 
-      // Filtrar por número exacto de habitaciones
       if (filters.bedrooms && property.bedrooms !== filters.bedrooms) {
         return false;
       }
 
-      // Filtrar por precio
       if (filters.minPrice && property.price < filters.minPrice) {
         return false;
       }
@@ -69,7 +58,6 @@ const Index = () => {
         return false;
       }
 
-      // Filtrar por tamaño
       if (filters.minSize && property.size < filters.minSize) {
         return false;
       }
@@ -77,13 +65,12 @@ const Index = () => {
         return false;
       }
 
-      // Filtrar por palabras clave
       if (filters.keywords.length > 0) {
         return filters.keywords.some(keyword => 
           property.keywords.includes(keyword.toLowerCase()) ||
           property.title.toLowerCase().includes(keyword.toLowerCase()) ||
           property.location.toLowerCase().includes(keyword.toLowerCase()) ||
-          (keyword === 'jardín' && property.hasGarden)
+          (keyword === 'jardín' && property.has_garden)
         );
       }
 
@@ -102,7 +89,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
       <div className="bg-primary text-white py-20">
         <div className="container mx-auto text-center">
           <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6">
@@ -112,7 +98,6 @@ const Index = () => {
             Miles de propiedades te están esperando
           </p>
           
-          {/* Search Bar */}
           <div className="max-w-2xl mx-auto flex gap-2">
             <Input 
               placeholder="Buscar por ubicación..." 
@@ -125,66 +110,20 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Properties Grid */}
       <div className="container mx-auto py-12">
         <h2 className="font-heading text-2xl font-semibold mb-6">
           Propiedades destacadas
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {currentProperties.map((property) => (
-            <PropertyCard 
-              key={property.id} 
-              {...property} 
-              isHighlighted={property.id === highlightedPropertyId}
-            />
-          ))}
-        </div>
-
-        <Pagination className="mt-8">
-          <PaginationContent>
-            {currentPage > 1 && (
-              <PaginationItem>
-                <PaginationPrevious 
-                  href="#" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCurrentPage(prev => prev - 1);
-                  }} 
-                />
-              </PaginationItem>
-            )}
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCurrentPage(page);
-                  }}
-                  isActive={currentPage === page}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-
-            {currentPage < totalPages && (
-              <PaginationItem>
-                <PaginationNext 
-                  href="#" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCurrentPage(prev => prev + 1);
-                  }} 
-                />
-              </PaginationItem>
-            )}
-          </PaginationContent>
-        </Pagination>
+        
+        <PropertyList
+          properties={currentProperties}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          highlightedPropertyId={highlightedPropertyId}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
-      {/* Chatbot with filtering capabilities */}
       <Chatbot 
         onFilter={handleFilter}
         onResetFilter={() => {
