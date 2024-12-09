@@ -62,7 +62,7 @@ const Chatbot = () => {
       </Button>
 
       {isOpen && (
-        <Card className="fixed bottom-20 right-4 w-80 h-96 flex flex-col shadow-xl">
+        <Card className="fixed bottom-20 right-4 w-80 h-96 flex flex-col shadow-xl bg-white">
           <div className="p-4 bg-primary text-white flex justify-between items-center">
             <h3 className="font-heading">Asistente Inmobiliario</h3>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
@@ -70,7 +70,7 @@ const Chatbot = () => {
             </Button>
           </div>
           
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] p-3 rounded-lg ${
