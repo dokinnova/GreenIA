@@ -10,6 +10,7 @@ import { fetchProperties } from '@/data/properties/queries';
 import type { Property } from '@/data/properties/types';
 import { filterProperties } from '@/utils/propertyFilters';
 import Footer from '@/components/Footer';
+import Testimonials from '@/components/Testimonials';
 import {
   Dialog,
   DialogContent,
@@ -134,6 +135,8 @@ const Index = () => {
           onPageChange={setCurrentPage}
         />
       </div>
+
+      <Testimonials />
 
       <Chatbot 
         onFilter={handleFilter}
