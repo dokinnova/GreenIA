@@ -4,10 +4,21 @@ import { Card } from './ui/card';
 import { MessageCircle, X, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './ui/use-toast';
+import { extractPropertyFilters } from '../utils/propertyFilters';
 
 interface ChatbotProps {
-  onFilter: (keywords: string[]) => void;
+  onFilter: (filters: PropertyFilters) => void;
   onResetFilter: () => void;
+}
+
+export interface PropertyFilters {
+  keywords: string[];
+  bathrooms?: number;
+  bedrooms?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  minSize?: number;
+  maxSize?: number;
 }
 
 const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
@@ -17,7 +28,7 @@ const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [activeFilters, setActiveFilters] = useState<PropertyFilters>({ keywords: [] });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -29,56 +40,6 @@ const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
     scrollToBottom();
   }, [messages]);
 
-  const extractKeywords = (text: string): string[] => {
-    const keywordMappings = {
-      // Tamaño y tipo de familia
-      'familia grande': ['grande', 'espacioso'],
-      'niños': ['jardín', 'seguro'],
-      'perro': ['jardín'],
-      'mascota': ['jardín'],
-      
-      // Características de la vivienda
-      'grande': ['grande', 'espacioso'],
-      'espacioso': ['grande'],
-      'jardín': ['jardín'],
-      'piscina': ['piscina'],
-      'terraza': ['terraza'],
-      'ático': ['ático'],
-      'lujo': ['lujo'],
-      'reformado': ['reformado'],
-      'céntrico': ['céntrico'],
-      'moderno': ['moderno'],
-      'vistas': ['vistas'],
-      
-      // Ubicación
-      'centro': ['céntrico'],
-      'ciudad': ['céntrico'],
-      'tranquilo': ['jardín'],
-      
-      // Características específicas
-      'trabajo desde casa': ['espacioso'],
-      'oficina': ['espacioso'],
-      'parking': ['garaje'],
-      'garaje': ['garaje']
-    };
-
-    const normalizedText = text.toLowerCase();
-    const newKeywords = new Set<string>();
-
-    // Buscar coincidencias directas y relacionadas
-    Object.entries(keywordMappings).forEach(([key, relatedKeywords]) => {
-      if (normalizedText.includes(key)) {
-        relatedKeywords.forEach(keyword => newKeywords.add(keyword));
-      }
-    });
-
-    // Combinar con filtros activos existentes
-    const combinedKeywords = [...new Set([...activeFilters, ...Array.from(newKeywords)])];
-    setActiveFilters(combinedKeywords);
-    
-    return combinedKeywords;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -88,17 +49,16 @@ const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
     setMessages(prev => [...prev, {text: userMessage, isUser: true}]);
     setIsLoading(true);
 
-    // Extract keywords and filter properties
-    const keywords = extractKeywords(userMessage);
-    if (keywords.length > 0) {
-      onFilter(keywords);
-    }
+    // Extract filters from the message
+    const newFilters = extractPropertyFilters(userMessage, activeFilters);
+    setActiveFilters(newFilters);
+    onFilter(newFilters);
 
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
         body: { 
           message: userMessage,
-          activeFilters: activeFilters // Enviamos los filtros activos al backend
+          activeFilters: newFilters
         }
       });
 
@@ -134,7 +94,7 @@ const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
   };
 
   const handleReset = () => {
-    setActiveFilters([]);
+    setActiveFilters({ keywords: [] });
     onResetFilter();
     setMessages([{
       text: "¡Hola! Soy tu asistente inmobiliario. ¿Qué tipo de vivienda estás buscando?",

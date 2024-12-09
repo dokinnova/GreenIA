@@ -26,6 +26,55 @@ const Index = () => {
   const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
   const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
 
+  const handleFilter = (filters: PropertyFilters) => {
+    const filtered = properties.filter(property => {
+      // Filtrar por número de baños
+      if (filters.bathrooms && property.bathrooms < filters.bathrooms) {
+        return false;
+      }
+
+      // Filtrar por número de habitaciones
+      if (filters.bedrooms && property.bedrooms < filters.bedrooms) {
+        return false;
+      }
+
+      // Filtrar por precio
+      if (filters.minPrice && property.price < filters.minPrice) {
+        return false;
+      }
+      if (filters.maxPrice && property.price > filters.maxPrice) {
+        return false;
+      }
+
+      // Filtrar por tamaño
+      if (filters.minSize && property.size < filters.minSize) {
+        return false;
+      }
+
+      // Filtrar por palabras clave
+      if (filters.keywords.length > 0) {
+        return filters.keywords.some(keyword => 
+          property.keywords.includes(keyword.toLowerCase()) ||
+          property.title.toLowerCase().includes(keyword.toLowerCase()) ||
+          property.location.toLowerCase().includes(keyword.toLowerCase()) ||
+          (keyword === 'jardín' && property.hasGarden)
+        );
+      }
+
+      return true;
+    });
+
+    setFilteredProperties(filtered);
+    setCurrentPage(1);
+    
+    if (filtered.length === 1) {
+      setHighlightedPropertyId(filtered[0].id);
+    } else {
+      setHighlightedPropertyId(null);
+    }
+  };
+
+  // ... keep existing code (return JSX with updated onFilter prop)
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -66,7 +115,6 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Pagination */}
         <Pagination className="mt-8">
           <PaginationContent>
             {currentPage > 1 && (
@@ -113,27 +161,11 @@ const Index = () => {
 
       {/* Chatbot with filtering capabilities */}
       <Chatbot 
-        onFilter={(keywords: string[]) => {
-          const filtered = properties.filter(property => 
-            keywords.some(keyword => 
-              property.keywords.includes(keyword.toLowerCase()) ||
-              property.title.toLowerCase().includes(keyword.toLowerCase()) ||
-              property.location.toLowerCase().includes(keyword.toLowerCase()) ||
-              (keyword === 'jardín' && property.hasGarden)
-            )
-          );
-          setFilteredProperties(filtered);
-          setCurrentPage(1); // Resetear a la primera página cuando se filtra
-          if (filtered.length === 1) {
-            setHighlightedPropertyId(filtered[0].id);
-          } else {
-            setHighlightedPropertyId(null);
-          }
-        }}
+        onFilter={handleFilter}
         onResetFilter={() => {
           setFilteredProperties(properties);
           setHighlightedPropertyId(null);
-          setCurrentPage(1); // Resetear a la primera página cuando se limpia el filtro
+          setCurrentPage(1);
         }}
       />
     </div>
