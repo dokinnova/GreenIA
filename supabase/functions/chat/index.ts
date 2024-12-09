@@ -74,7 +74,7 @@ serve(async (req) => {
         'OpenAI-Beta': 'assistants=v1'
       },
       body: JSON.stringify({
-        assistant_id: ASSISTANT_ID,
+        assistant_id: ASSISTANT_ID
       })
     });
 
@@ -90,7 +90,7 @@ serve(async (req) => {
     // Esperar a que el asistente termine de procesar
     let runStatus;
     let attempts = 0;
-    const maxAttempts = 30; // 30 segundos máximo de espera
+    const maxAttempts = 60; // Aumentamos el tiempo máximo de espera a 60 segundos
     
     do {
       console.log('Verificando estado del run...')
