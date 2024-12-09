@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropertyCard from '../components/PropertyCard';
 import Chatbot, { PropertyFilters } from '../components/Chatbot';
 import { Input } from '../components/ui/input';
@@ -12,13 +12,36 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { properties, Property } from '../data/properties';
+import { properties, generateImagesForProperties } from '../data/properties';
+import { useToast } from '../components/ui/use-toast';
 
 const Index = () => {
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
   const [filteredProperties, setFilteredProperties] = useState(properties);
   const [currentPage, setCurrentPage] = useState(1);
+  const { toast } = useToast();
   const propertiesPerPage = 12;
+
+  useEffect(() => {
+    const generateImages = async () => {
+      try {
+        await generateImagesForProperties();
+        toast({
+          title: "Imágenes generadas",
+          description: "Las imágenes de las propiedades han sido actualizadas.",
+        });
+      } catch (error) {
+        console.error('Error generating images:', error);
+        toast({
+          title: "Error",
+          description: "Hubo un error al generar las imágenes.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    generateImages();
+  }, []);
 
   // Calcular propiedades para la página actual
   const indexOfLastProperty = currentPage * propertiesPerPage;
