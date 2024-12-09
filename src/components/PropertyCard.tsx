@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from './ui/card';
-import { Tree } from 'lucide-react';
+import { Trees } from 'lucide-react';
 
 interface PropertyCardProps {
   title: string;
@@ -40,7 +40,7 @@ const PropertyCard = ({
           <span>{size} m²</span>
           {hasGarden && (
             <span className="flex items-center gap-1">
-              <Tree className="h-4 w-4" />
+              <Trees className="h-4 w-4" />
               Jardín
             </span>
           )}
