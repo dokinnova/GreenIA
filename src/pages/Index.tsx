@@ -9,6 +9,7 @@ import Chatbot, { PropertyFilters } from '@/components/Chatbot';
 import { fetchProperties } from '@/data/properties/queries';
 import type { Property } from '@/data/properties/types';
 import { filterProperties } from '@/utils/propertyFilters';
+import Footer from '@/components/Footer';
 import {
   Dialog,
   DialogContent,
@@ -72,7 +73,7 @@ const Index = () => {
   const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <div 
         className="relative py-20 text-white"
         style={{
@@ -103,7 +104,7 @@ const Index = () => {
         </div>
       </div>
 
-      <div className="container mx-auto py-12">
+      <div className="container mx-auto py-12 flex-grow">
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-heading text-2xl font-semibold">
             Propiedades destacadas
@@ -142,6 +143,8 @@ const Index = () => {
           setCurrentPage(1);
         }}
       />
+      
+      <Footer />
     </div>
   );
 };
