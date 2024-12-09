@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Property } from '@/data/properties/types';
 import L from 'leaflet';
+import { X } from 'lucide-react';
+import { Button } from './ui/button';
 
 // Arreglar el ícono del marcador de Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -32,12 +34,14 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
   return (
     <div className="fixed inset-0 z-50 bg-white">
       <div className="absolute top-4 right-4 z-10">
-        <button
+        <Button
           onClick={onClose}
-          className="bg-white p-2 rounded-full shadow-lg hover:bg-gray-100"
+          variant="secondary"
+          size="icon"
+          className="rounded-full shadow-lg hover:bg-gray-200"
         >
-          ✕
-        </button>
+          <X className="h-4 w-4" />
+        </Button>
       </div>
       <MapContainer
         center={defaultCenter}
