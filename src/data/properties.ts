@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export interface Property {
   id: number;
   title: string;
@@ -304,26 +306,25 @@ export const properties: Property[] = [
 
 // Function to generate images for all properties
 export const generateImagesForProperties = async () => {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  console.log('Starting image generation for properties...');
   
   for (const property of properties) {
     try {
-      const response = await fetch(`${supabaseUrl}/functions/v1/generate-property-image`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      console.log(`Generating image for property ${property.id}: ${property.title}`);
+      
+      const { data, error } = await supabase.functions.invoke('generate-property-image', {
+        body: {
           title: property.title,
           location: property.location
-        })
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
       }
 
-      const data = await response.json();
+      console.log(`Successfully generated image for property ${property.id}`);
       property.imageUrl = data.imageUrl;
       
       // Add a small delay to avoid rate limiting
