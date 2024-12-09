@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, X, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from './ui/use-toast';
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ const Chatbot = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -25,24 +27,41 @@ const Chatbot = () => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
     
-    const userMessage = input;
+    const userMessage = input.trim();
     setInput("");
     setMessages(prev => [...prev, {text: userMessage, isUser: true}]);
     setIsLoading(true);
 
     try {
+      console.log('Enviando mensaje:', userMessage);
       const { data, error } = await supabase.functions.invoke('chat', {
         body: { message: userMessage }
       });
 
-      if (error) throw error;
+      console.log('Respuesta recibida:', data);
+
+      if (error) {
+        console.error('Error de Supabase:', error);
+        throw error;
+      }
+
+      if (!data?.reply) {
+        console.error('Respuesta vacía:', data);
+        throw new Error('No se recibió una respuesta válida del asistente');
+      }
 
       setMessages(prev => [...prev, {
         text: data.reply,
         isUser: false
       }]);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error al procesar mensaje:', error);
+      toast({
+        title: "Error",
+        description: "Lo siento, ha ocurrido un error al procesar tu mensaje. Por favor, inténtalo de nuevo.",
+        variant: "destructive"
+      });
+      
       setMessages(prev => [...prev, {
         text: "Lo siento, ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.",
         isUser: false
@@ -84,14 +103,23 @@ const Chatbot = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="p-4 border-t">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Escribe tu mensaje..."
-              className="w-full p-2 border rounded-md"
-              disabled={isLoading}
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Escribe tu mensaje..."
+                className="flex-1 p-2 border rounded-md"
+                disabled={isLoading}
+              />
+              <Button type="submit" disabled={isLoading || !input.trim()}>
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Enviar'
+                )}
+              </Button>
+            </div>
           </form>
         </Card>
       )}
