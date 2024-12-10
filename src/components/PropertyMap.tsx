@@ -6,7 +6,7 @@ import L from 'leaflet';
 import { X } from 'lucide-react';
 import { Button } from './ui/button';
 
-// Arreglar el ícono del marcador de Leaflet
+// Fix Leaflet's default icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -20,12 +20,12 @@ interface PropertyMapProps {
 }
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
-  // Coordenadas del centro de España como punto inicial
+  // Default center coordinates (center of Spain)
   const defaultCenter: [number, number] = [40.4168, -3.7038];
   
-  // Función para convertir la dirección en coordenadas (mock por ahora)
+  // Function to convert address to coordinates (mock for now)
   const getCoordinates = (location: string): [number, number] => {
-    // Por ahora, generamos coordenadas aleatorias alrededor del centro de España
+    // Generate random coordinates around Spain's center for now
     const lat = defaultCenter[0] + (Math.random() - 0.5) * 2;
     const lng = defaultCenter[1] + (Math.random() - 0.5) * 2;
     return [lat, lng];
@@ -33,30 +33,33 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 right-4 z-[1000]">
         <Button
           onClick={onClose}
           variant="secondary"
           size="icon"
-          className="rounded-full shadow-lg hover:bg-gray-200"
+          className="rounded-full bg-white shadow-lg hover:bg-gray-100"
         >
           <X className="h-4 w-4" />
         </Button>
       </div>
       <MapContainer
-        center={defaultCenter}
+        className="h-screen w-full"
+        center={defaultCenter as L.LatLngExpression}
         zoom={6}
-        style={{ height: '100vh', width: '100%' }}
         scrollWheelZoom={true}
       >
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {properties.map((property) => {
           const coordinates = getCoordinates(property.location);
           return (
-            <Marker key={property.id} position={coordinates}>
+            <Marker 
+              key={property.id} 
+              position={coordinates as L.LatLngExpression}
+            >
               <Popup>
                 <div className="p-2">
                   <h3 className="font-bold">{property.title}</h3>
