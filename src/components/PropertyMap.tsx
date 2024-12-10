@@ -21,19 +21,41 @@ interface PropertyMapProps {
 
 // Helper function to extract coordinates from location string
 const getCoordinatesFromLocation = (location: string): [number, number] => {
-  // For now, return random coordinates around Madrid for demonstration
-  // In a real app, you would use geocoding here
-  const madridLat = 40.4168;
-  const madridLng = -3.7038;
-  const randomOffset = () => (Math.random() - 0.5) * 0.1; // Random offset ±0.05 degrees
-  return [madridLat + randomOffset(), madridLng + randomOffset()];
+  // Mapa de ubicaciones comunes en Madrid con sus coordenadas
+  const locationMap: { [key: string]: [number, number] } = {
+    'Madrid Centro': [40.4168, -3.7038],
+    'Salamanca': [40.4255, -3.6857],
+    'Chamberí': [40.4352, -3.7035],
+    'Retiro': [40.4146, -3.6836],
+    'La Latina': [40.4098, -3.7097],
+    'Malasaña': [40.4260, -3.7038],
+    'Chueca': [40.4231, -3.6952],
+    'Lavapiés': [40.4107, -3.7014],
+    'Chamartín': [40.4677, -3.6773],
+    'Tetuán': [40.4594, -3.6975],
+    'Arganzuela': [40.4008, -3.6999],
+    'Moncloa': [40.4356, -3.7185],
+    'Barrio de Las Letras': [40.4140, -3.6977],
+    'Atocha': [40.4079, -3.6908]
+  };
+
+  // Buscar la ubicación en el mapa
+  for (const [key, coords] of Object.entries(locationMap)) {
+    if (location.toLowerCase().includes(key.toLowerCase())) {
+      return coords;
+    }
+  }
+
+  // Si no se encuentra una coincidencia exacta, devolver coordenadas de Madrid Centro
+  console.log(`No se encontraron coordenadas exactas para: ${location}, usando Madrid Centro como fallback`);
+  return [40.4168, -3.7038];
 };
 
 const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
-  // Calculate center based on first property or default to Madrid
+  // Calculate center based on first property or default to Madrid Centro
   const defaultPosition: [number, number] = properties.length > 0 
     ? getCoordinatesFromLocation(properties[0].location)
-    : [40.4168, -3.7038]; // Madrid coordinates
+    : [40.4168, -3.7038];
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -49,10 +71,10 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
       </div>
       
       <MapContainer
-        center={defaultPosition as L.LatLngExpression}
+        center={defaultPosition}
         zoom={13}
         scrollWheelZoom={true}
-        className="h-full w-full"
+        style={{ height: '100%', width: '100%' }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {properties.map((property) => {
@@ -60,7 +82,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
           return (
             <LeafletMarker
               key={property.id}
-              position={coordinates as L.LatLngExpression}
+              position={coordinates}
             >
               <LeafletPopup>
                 <div className="p-2">
