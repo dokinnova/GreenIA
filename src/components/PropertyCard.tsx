@@ -34,10 +34,21 @@ const PropertyCard = ({
   has_garden,
   isHighlighted = false 
 }: PropertyCardProps) => {
-  // Use image_urls if available, otherwise fallback to single image_url
-  const images = (image_urls && image_urls.length > 0) 
-    ? image_urls 
-    : (image_url ? [image_url] : ['/placeholder.svg']);
+  // Usar image_urls si está disponible y tiene elementos, si no usar image_url
+  const allImages = React.useMemo(() => {
+    console.log('image_urls:', image_urls);
+    console.log('image_url:', image_url);
+    
+    if (image_urls && image_urls.length > 0) {
+      return image_urls;
+    }
+    if (image_url) {
+      return [image_url];
+    }
+    return ['/placeholder.svg'];
+  }, [image_urls, image_url]);
+
+  console.log('Imágenes finales para', title, ':', allImages);
 
   return (
     <Card className={`property-card overflow-hidden transition-all duration-300 ${
@@ -46,7 +57,7 @@ const PropertyCard = ({
       <div className="relative aspect-video">
         <Carousel className="w-full">
           <CarouselContent>
-            {images.map((img, index) => (
+            {allImages.map((img, index) => (
               <CarouselItem key={index}>
                 <img 
                   src={img} 
@@ -56,7 +67,7 @@ const PropertyCard = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          {images.length > 1 && (
+          {allImages.length > 1 && (
             <>
               <CarouselPrevious className="left-2" />
               <CarouselNext className="right-2" />
