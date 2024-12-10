@@ -21,8 +21,9 @@ interface PropertyMapProps {
 
 // Helper function to extract coordinates from location string
 const getCoordinatesFromLocation = (location: string): [number, number] => {
-  // Mapa de ubicaciones comunes en Madrid con sus coordenadas
+  // Mapa de ubicaciones con sus coordenadas
   const locationMap: { [key: string]: [number, number] } = {
+    // Madrid y alrededores
     'Madrid Centro': [40.4168, -3.7038],
     'Salamanca': [40.4255, -3.6857],
     'Chamberí': [40.4352, -3.7035],
@@ -36,7 +37,20 @@ const getCoordinatesFromLocation = (location: string): [number, number] => {
     'Arganzuela': [40.4008, -3.6999],
     'Moncloa': [40.4356, -3.7185],
     'Barrio de Las Letras': [40.4140, -3.6977],
-    'Atocha': [40.4079, -3.6908]
+    'Atocha': [40.4079, -3.6908],
+    // Otras ciudades importantes
+    'Barcelona': [41.3851, 2.1734],
+    'Valencia': [39.4699, -0.3763],
+    'Sevilla': [37.3891, -5.9845],
+    'Zaragoza': [41.6488, -0.8891],
+    'Málaga': [36.7213, -4.4217],
+    'Bilbao': [43.2630, -2.9350],
+    'Alicante': [38.3452, -0.4815],
+    'Córdoba': [37.8882, -4.7794],
+    'Granada': [37.1773, -3.5986],
+    'Vigo': [42.2406, -8.7207],
+    'Gijón': [43.5322, -5.6611],
+    'San Sebastián': [43.3183, -1.9812],
   };
 
   // Buscar la ubicación en el mapa
@@ -46,16 +60,14 @@ const getCoordinatesFromLocation = (location: string): [number, number] => {
     }
   }
 
-  // Si no se encuentra una coincidencia exacta, devolver coordenadas de Madrid Centro
-  console.log(`No se encontraron coordenadas exactas para: ${location}, usando Madrid Centro como fallback`);
-  return [40.4168, -3.7038];
+  // Si no se encuentra una coincidencia exacta, devolver coordenadas del centro de España
+  console.log(`No se encontraron coordenadas exactas para: ${location}, usando centro de España como fallback`);
+  return [40.4637, -3.7492]; // Centro aproximado de España
 };
 
 const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
-  // Calculate center based on first property or default to Madrid Centro
-  const defaultPosition: [number, number] = properties.length > 0 
-    ? getCoordinatesFromLocation(properties[0].location)
-    : [40.4168, -3.7038];
+  // Centrar en el centro de España y usar un zoom que muestre toda la península
+  const defaultPosition: [number, number] = [40.4637, -3.7492];
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -71,8 +83,8 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
       </div>
       
       <MapContainer
-        center={defaultPosition}
-        zoom={13}
+        center={defaultPosition as L.LatLngExpression}
+        zoom={6} // Zoom reducido para ver toda España
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
@@ -82,7 +94,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
           return (
             <LeafletMarker
               key={property.id}
-              position={coordinates}
+              position={coordinates as L.LatLngExpression}
             >
               <LeafletPopup>
                 <div className="p-2">
