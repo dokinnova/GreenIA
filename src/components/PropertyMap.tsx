@@ -37,18 +37,22 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
-      <Button
-        onClick={onClose}
-        className="absolute top-4 right-4 z-10 bg-white hover:bg-gray-100 shadow-lg rounded-full w-10 h-10 p-0 flex items-center justify-center"
-      >
-        <X className="h-6 w-6" />
-      </Button>
+      <div className="absolute top-4 right-4 z-[1000]">
+        <Button
+          onClick={onClose}
+          variant="secondary"
+          size="icon"
+          className="bg-white hover:bg-gray-100 shadow-lg rounded-full w-12 h-12"
+        >
+          <X className="h-6 w-6" />
+        </Button>
+      </div>
       
       <MapContainer
-        className="h-full w-full"
-        center={defaultPosition}
+        center={defaultPosition as L.LatLngExpression}
         zoom={13}
         scrollWheelZoom={true}
+        className="h-full w-full"
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {properties.map((property) => {
@@ -56,7 +60,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
           return (
             <LeafletMarker
               key={property.id}
-              position={coordinates}
+              position={coordinates as L.LatLngExpression}
             >
               <LeafletPopup>
                 <div className="p-2">
