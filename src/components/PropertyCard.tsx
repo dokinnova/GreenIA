@@ -34,43 +34,43 @@ const PropertyCard = ({
   has_garden,
   isHighlighted = false 
 }: PropertyCardProps) => {
-  // Usar image_urls si está disponible y tiene elementos, si no usar image_url
-  const allImages = React.useMemo(() => {
-    const images = [];
+  // Preparar el array de imágenes, priorizando image_urls
+  const images = React.useMemo(() => {
     if (image_urls && image_urls.length > 0) {
-      images.push(...image_urls);
-    } else if (image_url) {
-      images.push(image_url);
+      return image_urls;
     }
-    // Si no hay imágenes, usar un placeholder
-    if (images.length === 0) {
-      images.push('/placeholder.svg');
+    if (image_url) {
+      return [image_url];
     }
-    return images;
+    return ['/placeholder.svg'];
   }, [image_urls, image_url]);
 
-  console.log('Images for property:', title, allImages); // Para debugging
+  console.log('PropertyCard - Images:', { title, images });
 
   return (
-    <Card className={`property-card overflow-hidden transition-all duration-300 ${
+    <Card className={`overflow-hidden transition-all duration-300 ${
       isHighlighted ? 'ring-2 ring-primary scale-105' : ''
     }`}>
       <div className="relative aspect-video">
         <Carousel className="w-full">
           <CarouselContent>
-            {allImages.map((img, index) => (
+            {images.map((img, index) => (
               <CarouselItem key={index}>
                 <div className="relative aspect-video">
                   <img 
                     src={img} 
                     alt={`${title} - imagen ${index + 1}`} 
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error('Error loading image:', img);
+                      e.currentTarget.src = '/placeholder.svg';
+                    }}
                   />
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          {allImages.length > 1 && (
+          {images.length > 1 && (
             <>
               <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
               <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
@@ -78,6 +78,7 @@ const PropertyCard = ({
           )}
         </Carousel>
       </div>
+
       <div className="p-4">
         <h3 className="font-heading font-semibold text-lg mb-2">{title}</h3>
         <p className="text-2xl font-bold text-primary mb-2">€{price.toLocaleString()}</p>
