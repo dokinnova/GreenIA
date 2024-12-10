@@ -21,10 +21,10 @@ interface PropertyMapProps {
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
   // Default center coordinates (center of Spain)
-  const defaultCenter: [number, number] = [40.4168, -3.7038];
+  const defaultCenter: L.LatLngExpression = [40.4168, -3.7038];
   
   // Function to convert address to coordinates (mock for now)
-  const getCoordinates = (location: string): [number, number] => {
+  const getCoordinates = (location: string): L.LatLngExpression => {
     // Generate random coordinates around Spain's center for now
     const lat = defaultCenter[0] + (Math.random() - 0.5) * 2;
     const lng = defaultCenter[1] + (Math.random() - 0.5) * 2;
@@ -45,20 +45,20 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       <MapContainer
         className="h-screen w-full"
-        center={defaultCenter as L.LatLngExpression}
+        center={defaultCenter}
         zoom={6}
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {properties.map((property) => {
           const coordinates = getCoordinates(property.location);
           return (
             <Marker 
               key={property.id} 
-              position={coordinates as L.LatLngExpression}
+              position={coordinates}
             >
               <Popup>
                 <div className="p-2">
