@@ -26,9 +26,9 @@ interface GeocodingResult {
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
   // Default center coordinates (center of Spain)
-  const defaultCenter: [number, number] = [40.4168, -3.7038];
+  const defaultCenter: L.LatLngExpression = [40.4168, -3.7038];
   const [propertyCoordinates, setPropertyCoordinates] = useState<Map<number, L.LatLngExpression>>(new Map());
-  const [mapCenter, setMapCenter] = useState<[number, number]>(defaultCenter);
+  const [mapCenter, setMapCenter] = useState<L.LatLngExpression>(defaultCenter);
   const [isLoading, setIsLoading] = useState(true);
 
   // Function to convert address to coordinates using Nominatim
@@ -118,13 +118,13 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {properties.map((property) => {
-          const coordinates = propertyCoordinates.get(property.id);
-          if (!coordinates) return null;
+        {Array.from(propertyCoordinates.entries()).map(([id, coordinates]) => {
+          const property = properties.find(p => p.id === id);
+          if (!property) return null;
 
           return (
             <Marker 
-              key={property.id} 
+              key={id} 
               position={coordinates}
             >
               <Popup>
