@@ -34,12 +34,17 @@ export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
 
   const onSubmit = async (data: PropertyFormData) => {
     try {
-      // Include both image_url and image_urls in the submission
+      console.log('Submitting with imageUrls:', imageUrls);
+      
+      // Asegurarnos de que image_urls se envía como un array
       const propertyData = {
         ...data,
         image_urls: imageUrls,
-        image_url: imageUrls[0] || null // Set the first image as the main image
+        // Si hay imágenes, usar la primera como image_url principal
+        image_url: imageUrls.length > 0 ? imageUrls[0] : null
       };
+
+      console.log('Property data to submit:', propertyData);
 
       await createProperty(propertyData);
       queryClient.invalidateQueries({ queryKey: ['properties'] });
@@ -51,6 +56,7 @@ export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
       setImageUrls([]);
       onSuccess?.();
     } catch (error) {
+      console.error('Error creating property:', error);
       toast({
         title: "Error",
         description: "No se pudo crear la propiedad",
@@ -62,13 +68,13 @@ export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
   const addImageUrl = () => {
     const newUrl = form.getValues('image_url');
     if (newUrl && !imageUrls.includes(newUrl)) {
-      setImageUrls([...imageUrls, newUrl]);
+      setImageUrls(prev => [...prev, newUrl]);
       form.setValue('image_url', '');
     }
   };
 
   const removeImageUrl = (index: number) => {
-    setImageUrls(imageUrls.filter((_, i) => i !== index));
+    setImageUrls(prev => prev.filter((_, i) => i !== index));
   };
 
   return (
