@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import PropertyList from '@/components/PropertyList';
 import PropertyFilters from '@/components/PropertyFilters';
 import Chatbot, { PropertyFilters as ChatbotFilters } from '@/components/Chatbot';
-import { fetchProperties } from '@/data/properties/queries';
+import { fetchProperties, addInitialProperties } from '@/data/properties/queries';
 import type { Property } from '@/data/properties/types';
 import { filterProperties } from '@/utils/propertyFilters';
 import Footer from '@/components/Footer';
@@ -108,6 +108,19 @@ const Index = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const initializeProperties = async () => {
+      try {
+        await addInitialProperties();
+        queryClient.invalidateQueries({ queryKey: ['properties'] });
+      } catch (error) {
+        console.error('Error initializing properties:', error);
+      }
+    };
+
+    initializeProperties();
+  }, []);
 
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Cargando propiedades...</div>;
