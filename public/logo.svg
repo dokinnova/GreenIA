@@ -1,5 +1,5 @@
 <svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M10 30C15.5228 30 20 25.5228 20 20C20 14.4772 15.5228 10 10 10C4.47715 10 0 14.4772 0 20C0 25.5228 4.47715 30 10 30Z" fill="#4CAF50"/>
   <path d="M10 25C12.7614 25 15 22.7614 15 20C15 17.2386 12.7614 15 10 15C7.23858 15 5 17.2386 5 20C5 22.7614 7.23858 25 10 25Z" fill="#81C784"/>
-  <text x="25" y="25" font-family="Arial" font-size="20" font-weight="bold" fill="#1a365d">GrennIA</text>
+  <text x="25" y="25" font-family="Arial" font-size="20" font-weight="bold" fill="#ffffff">GrennIA</text>
 </svg>
