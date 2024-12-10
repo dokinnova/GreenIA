@@ -45,7 +45,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
       </Button>
       
       <MapContainer
-        style={{ height: '100%', width: '100%' }}
+        className="h-full w-full"
         center={defaultPosition}
         zoom={13}
         scrollWheelZoom={true}
