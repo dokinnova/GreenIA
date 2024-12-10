@@ -18,14 +18,13 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
-        center={defaultPosition}
+        defaultCenter={defaultPosition}
         zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?attribution=© OpenStreetMap contributors"
         />
         
         {properties.map((property) => {
