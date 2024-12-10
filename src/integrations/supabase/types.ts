@@ -17,6 +17,7 @@ export type Database = {
           has_garden: boolean | null
           id: number
           image_url: string | null
+          image_urls: string[] | null
           keywords: string[] | null
           location: string
           price: number
@@ -31,6 +32,7 @@ export type Database = {
           has_garden?: boolean | null
           id?: never
           image_url?: string | null
+          image_urls?: string[] | null
           keywords?: string[] | null
           location: string
           price: number
@@ -45,6 +47,7 @@ export type Database = {
           has_garden?: boolean | null
           id?: never
           image_url?: string | null
+          image_urls?: string[] | null
           keywords?: string[] | null
           location?: string
           price?: number

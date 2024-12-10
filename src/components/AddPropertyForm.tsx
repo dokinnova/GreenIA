@@ -8,12 +8,14 @@ import { useToast } from './ui/use-toast';
 import { createProperty } from '@/data/properties/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import type { Property } from '@/data/properties/types';
+import { Plus, X } from 'lucide-react';
 
 type PropertyFormData = Omit<Property, 'id' | 'created_at' | 'updated_at'>;
 
 export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [imageUrls, setImageUrls] = React.useState<string[]>([]);
   
   const form = useForm<PropertyFormData>({
     defaultValues: {
@@ -24,6 +26,7 @@ export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
       bathrooms: 1,
       size: 0,
       image_url: '',
+      image_urls: [],
       keywords: [],
       has_garden: false
     }
@@ -31,13 +34,21 @@ export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
 
   const onSubmit = async (data: PropertyFormData) => {
     try {
-      await createProperty(data);
+      // Include both image_url and image_urls in the submission
+      const propertyData = {
+        ...data,
+        image_urls: imageUrls,
+        image_url: imageUrls[0] || null // Set the first image as the main image
+      };
+
+      await createProperty(propertyData);
       queryClient.invalidateQueries({ queryKey: ['properties'] });
       toast({
         title: "Propiedad creada",
         description: "La propiedad se ha añadido correctamente",
       });
       form.reset();
+      setImageUrls([]);
       onSuccess?.();
     } catch (error) {
       toast({
@@ -46,6 +57,18 @@ export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
         variant: "destructive",
       });
     }
+  };
+
+  const addImageUrl = () => {
+    const newUrl = form.getValues('image_url');
+    if (newUrl && !imageUrls.includes(newUrl)) {
+      setImageUrls([...imageUrls, newUrl]);
+      form.setValue('image_url', '');
+    }
+  };
+
+  const removeImageUrl = (index: number) => {
+    setImageUrls(imageUrls.filter((_, i) => i !== index));
   };
 
   return (
@@ -137,19 +160,47 @@ export function AddPropertyForm({ onSuccess }: { onSuccess?: () => void }) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="image_url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>URL de la imagen</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="https://..." />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        <div className="space-y-2">
+          <FormField
+            control={form.control}
+            name="image_url"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URLs de imágenes</FormLabel>
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input {...field} placeholder="https://..." />
+                  </FormControl>
+                  <Button type="button" onClick={addImageUrl} size="icon">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          {imageUrls.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Imágenes añadidas:</p>
+              <div className="space-y-2">
+                {imageUrls.map((url, index) => (
+                  <div key={index} className="flex items-center gap-2 bg-gray-50 p-2 rounded-md">
+                    <span className="text-sm truncate flex-1">{url}</span>
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => removeImageUrl(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
-        />
+        </div>
 
         <FormField
           control={form.control}

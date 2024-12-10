@@ -7,6 +7,7 @@ export interface Property {
   bathrooms: number;
   size: number;
   image_url: string | null;
+  image_urls: string[] | null;
   keywords: string[];
   has_garden: boolean;
   created_at: string;

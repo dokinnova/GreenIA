@@ -1,6 +1,13 @@
 import React from 'react';
 import { Card } from './ui/card';
 import { Trees } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface PropertyCardProps {
   title: string;
@@ -10,6 +17,7 @@ interface PropertyCardProps {
   bathrooms: number;
   size: number;
   image_url: string | null;
+  image_urls?: string[] | null;
   has_garden: boolean;
   isHighlighted?: boolean;
 }
@@ -22,14 +30,40 @@ const PropertyCard = ({
   bathrooms, 
   size, 
   image_url,
+  image_urls = [],
   has_garden,
   isHighlighted = false 
 }: PropertyCardProps) => {
+  // Use image_urls if available, otherwise fallback to single image_url
+  const images = (image_urls && image_urls.length > 0) 
+    ? image_urls 
+    : (image_url ? [image_url] : ['/placeholder.svg']);
+
   return (
     <Card className={`property-card overflow-hidden transition-all duration-300 ${
       isHighlighted ? 'ring-2 ring-primary scale-105' : ''
     }`}>
-      <img src={image_url || '/placeholder.svg'} alt={title} className="w-full h-48 object-cover" />
+      <div className="relative aspect-video">
+        <Carousel className="w-full">
+          <CarouselContent>
+            {images.map((img, index) => (
+              <CarouselItem key={index}>
+                <img 
+                  src={img} 
+                  alt={`${title} - imagen ${index + 1}`} 
+                  className="w-full h-48 object-cover"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {images.length > 1 && (
+            <>
+              <CarouselPrevious className="left-2" />
+              <CarouselNext className="right-2" />
+            </>
+          )}
+        </Carousel>
+      </div>
       <div className="p-4">
         <h3 className="font-heading font-semibold text-lg mb-2">{title}</h3>
         <p className="text-2xl font-bold text-primary mb-2">€{price.toLocaleString()}</p>
