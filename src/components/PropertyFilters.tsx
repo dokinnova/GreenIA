@@ -99,7 +99,7 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
                 <SelectValue placeholder="Cualquiera" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Cualquiera</SelectItem>
+                <SelectItem value="any">Cualquiera</SelectItem>
                 {[1, 2, 3, 4, 5].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num}+ habitaciones
@@ -116,7 +116,7 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
                 <SelectValue placeholder="Cualquiera" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Cualquiera</SelectItem>
+                <SelectItem value="any">Cualquiera</SelectItem>
                 {[1, 2, 3, 4].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num}+ baños
