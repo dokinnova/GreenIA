@@ -188,7 +188,7 @@ const Index = () => {
       </div>
 
       <div className="container mx-auto py-6 md:py-12 px-4">
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col md:flex-row gap-8">
           {isMobile ? (
             <Sheet open={showFilters} onOpenChange={setShowFilters}>
               <SheetTrigger asChild>
@@ -196,7 +196,7 @@ const Index = () => {
                   Filtros
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] overflow-y-auto">
+              <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>Filtros</SheetTitle>
                 </SheetHeader>
@@ -204,8 +204,10 @@ const Index = () => {
               </SheetContent>
             </Sheet>
           ) : (
-            <div className="w-full md:w-80 md:sticky md:top-4">
-              <PropertyFilters onFilter={handleFilter} onSort={handleSort} />
+            <div className="md:w-80 shrink-0">
+              <div className="sticky top-4">
+                <PropertyFilters onFilter={handleFilter} onSort={handleSort} />
+              </div>
             </div>
           )}
 
@@ -261,7 +263,6 @@ const Index = () => {
       )}
 
       <Testimonials />
-
       <Chatbot 
         onFilter={handleChatbotFilter}
         onResetFilter={() => {
@@ -270,7 +271,6 @@ const Index = () => {
           setCurrentPage(1);
         }}
       />
-      
       <Footer />
     </div>
   );

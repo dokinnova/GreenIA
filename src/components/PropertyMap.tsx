@@ -18,12 +18,13 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
-        defaultCenter={defaultPosition}
+        center={defaultPosition}
         zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
@@ -35,6 +36,7 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
             <Marker 
               key={property.id} 
               position={position}
+              icon={defaultIcon}
             >
               <Popup>
                 <div className="p-2">
