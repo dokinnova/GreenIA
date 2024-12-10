@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Property } from '@/data/properties/types';
@@ -19,17 +19,81 @@ interface PropertyMapProps {
   onClose: () => void;
 }
 
+interface GeocodingResult {
+  lat: string;
+  lon: string;
+}
+
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
   // Default center coordinates (center of Spain)
   const defaultCenter: L.LatLngExpression = [40.4168, -3.7038];
-  
-  // Function to convert address to coordinates (mock for now)
-  const getCoordinates = (location: string): L.LatLngExpression => {
-    // Generate random coordinates around Spain's center for now
-    const lat = defaultCenter[0] + (Math.random() - 0.5) * 2;
-    const lng = defaultCenter[1] + (Math.random() - 0.5) * 2;
-    return [lat, lng];
+  const [propertyCoordinates, setPropertyCoordinates] = useState<Map<number, L.LatLngExpression>>(new Map());
+  const [mapCenter, setMapCenter] = useState<L.LatLngExpression>(defaultCenter);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Function to convert address to coordinates using Nominatim
+  const getCoordinates = async (location: string): Promise<L.LatLngExpression | null> => {
+    try {
+      const encodedLocation = encodeURIComponent(location + ', España');
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodedLocation}`
+      );
+      const data: GeocodingResult[] = await response.json();
+
+      if (data && data.length > 0) {
+        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+      }
+      console.warn(`No coordinates found for location: ${location}`);
+      return null;
+    } catch (error) {
+      console.error('Error geocoding address:', error);
+      return null;
+    }
   };
+
+  useEffect(() => {
+    const loadCoordinates = async () => {
+      const coordinates = new Map<number, L.LatLngExpression>();
+      let validCoordinatesCount = 0;
+      let sumLat = 0;
+      let sumLng = 0;
+
+      // Add delay between requests to respect Nominatim's usage policy
+      for (const property of properties) {
+        const coords = await getCoordinates(property.location);
+        if (coords) {
+          coordinates.set(property.id, coords);
+          sumLat += coords[0];
+          sumLng += coords[1];
+          validCoordinatesCount++;
+        }
+        // Add a small delay between requests
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      setPropertyCoordinates(coordinates);
+      
+      // Calculate new center if we have valid coordinates
+      if (validCoordinatesCount > 0) {
+        setMapCenter([sumLat / validCoordinatesCount, sumLng / validCoordinatesCount]);
+      }
+
+      setIsLoading(false);
+    };
+
+    loadCoordinates();
+  }, [properties]);
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+          <p>Cargando ubicaciones...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -45,7 +109,7 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       <MapContainer
         className="h-screen w-full"
-        center={defaultCenter}
+        center={mapCenter}
         zoom={6}
         scrollWheelZoom={true}
       >
@@ -54,7 +118,9 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {properties.map((property) => {
-          const coordinates = getCoordinates(property.location);
+          const coordinates = propertyCoordinates.get(property.id);
+          if (!coordinates) return null;
+
           return (
             <Marker 
               key={property.id} 
