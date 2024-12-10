@@ -23,6 +23,7 @@ export interface PropertyFilters {
 
 const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showHint, setShowHint] = useState(true);
   const [messages, setMessages] = useState<{text: string, isUser: boolean}[]>([
     {text: "¡Hola! Soy tu asistente inmobiliario. ¿Qué tipo de vivienda estás buscando?", isUser: false}
   ]);
@@ -102,19 +103,36 @@ const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
     }]);
   };
 
+  // Ocultar el hint cuando se abre el chat
+  useEffect(() => {
+    if (isOpen) {
+      setShowHint(false);
+    }
+  }, [isOpen]);
+
   return (
     <>
-      <Button
-        className="fixed bottom-4 right-4 rounded-full p-4"
-        onClick={() => setIsOpen(true)}
-      >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
+      <div className="fixed bottom-4 right-4 flex items-end">
+        {showHint && (
+          <div className="animate-bounce mb-2 mr-4 bg-white p-3 rounded-lg shadow-lg">
+            <p className="text-sm font-medium">
+              ¡Hola! 👋 Puedo ayudarte a encontrar tu vivienda ideal
+            </p>
+          </div>
+        )}
+        <Button
+          size="lg"
+          className="rounded-full p-6 bg-primary hover:bg-primary-hover shadow-lg transition-all duration-300 hover:scale-110"
+          onClick={() => setIsOpen(true)}
+        >
+          <MessageCircle className="h-8 w-8" />
+        </Button>
+      </div>
 
       {isOpen && (
-        <Card className="fixed bottom-20 right-4 w-80 h-96 flex flex-col shadow-xl bg-white">
+        <Card className="fixed bottom-24 right-4 w-96 h-[600px] flex flex-col shadow-xl bg-white">
           <div className="p-4 bg-primary text-white flex justify-between items-center">
-            <h3 className="font-heading">Asistente Inmobiliario</h3>
+            <h3 className="font-heading text-lg">Asistente Inmobiliario</h3>
             <div className="flex gap-2">
               <Button 
                 variant="ghost" 
