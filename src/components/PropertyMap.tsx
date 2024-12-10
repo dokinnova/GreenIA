@@ -5,7 +5,6 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import type { MapContainerProps } from 'react-leaflet';
 
 // Fix for default markers
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -84,7 +83,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
       </div>
       
       <MapContainer
-        center={defaultPosition as MapContainerProps['center']}
+        center={defaultPosition}
         zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
