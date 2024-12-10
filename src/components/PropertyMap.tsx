@@ -71,14 +71,14 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
-      <div className="absolute top-4 right-4 z-[1000]">
+      <div className="absolute top-2 md:top-4 right-2 md:right-4 z-[1000]">
         <Button
           onClick={onClose}
           variant="secondary"
           size="icon"
-          className="bg-white hover:bg-gray-100 shadow-lg rounded-full w-12 h-12"
+          className="bg-white hover:bg-gray-100 shadow-lg rounded-full w-10 h-10 md:w-12 md:h-12"
         >
-          <X className="h-6 w-6" />
+          <X className="h-5 w-5 md:h-6 md:w-6" />
         </Button>
       </div>
       
@@ -98,7 +98,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
             >
               <LeafletPopup>
                 <div className="p-2">
-                  <h3 className="font-bold text-lg mb-2">{property.title}</h3>
+                  <h3 className="font-bold text-base md:text-lg mb-2">{property.title}</h3>
                   <p className="text-sm text-gray-600 mb-1">{property.location}</p>
                   <p className="font-semibold">
                     {property.price.toLocaleString('es-ES', { 

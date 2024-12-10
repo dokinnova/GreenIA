@@ -13,6 +13,7 @@ import { filterProperties } from '@/utils/propertyFilters';
 import Footer from '@/components/Footer';
 import Testimonials from '@/components/Testimonials';
 import PropertyMap from '@/components/PropertyMap';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddPropertyForm } from '@/components/AddPropertyForm';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const Index = () => {
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
@@ -28,8 +36,10 @@ const Index = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [sortOrder, setSortOrder] = useState<string>('newest');
+  const [showFilters, setShowFilters] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
   const propertiesPerPage = 12;
 
   const { data: properties = [], isLoading, error } = useQuery({
@@ -136,10 +146,14 @@ const Index = () => {
   const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
   const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
 
+  const FiltersComponent = () => (
+    <PropertyFilters onFilter={handleFilter} onSort={handleSort} />
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div 
-        className="relative py-20 text-white"
+        className="relative py-12 md:py-20 text-white"
         style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2000")',
           backgroundSize: 'cover',
@@ -148,20 +162,20 @@ const Index = () => {
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         
-        <div className="container mx-auto text-center relative z-10">
+        <div className="container mx-auto text-center relative z-10 px-4">
           <img 
             src="/logo.svg" 
             alt="GrennIA Logo" 
-            className="h-12 mx-auto mb-8"
+            className="h-8 md:h-12 mx-auto mb-4 md:mb-8"
           />
-          <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6">
+          <h1 className="font-heading text-3xl md:text-5xl font-bold mb-4 md:mb-6">
             Encuentra tu hogar ideal
           </h1>
-          <p className="text-xl mb-8">
+          <p className="text-lg md:text-xl mb-6 md:mb-8">
             Miles de propiedades te están esperando
           </p>
           
-          <div className="max-w-2xl mx-auto flex gap-2">
+          <div className="max-w-2xl mx-auto flex gap-2 px-4">
             <Input 
               placeholder="Buscar por ubicación..." 
               className="bg-white text-gray-900"
@@ -173,23 +187,39 @@ const Index = () => {
         </div>
       </div>
 
-      <div className="container mx-auto py-12">
-        <div className="flex justify-between items-start gap-8">
-          <div className="w-80 sticky top-4">
-            <PropertyFilters onFilter={handleFilter} onSort={handleSort} />
-          </div>
+      <div className="container mx-auto py-6 md:py-12 px-4">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+          {isMobile ? (
+            <Sheet open={showFilters} onOpenChange={setShowFilters}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="w-full mb-4">
+                  Filtros
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px]">
+                <SheetHeader>
+                  <SheetTitle>Filtros</SheetTitle>
+                </SheetHeader>
+                <FiltersComponent />
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <div className="w-80 sticky top-4">
+              <FiltersComponent />
+            </div>
+          )}
 
           <div className="flex-1">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="font-heading text-2xl font-semibold">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+              <h2 className="font-heading text-xl md:text-2xl font-semibold">
                 Propiedades destacadas
               </h2>
               
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full md:w-auto">
                 <Button
                   variant="outline"
                   onClick={() => setShowMap(true)}
-                  className="flex items-center gap-2"
+                  className="flex-1 md:flex-none items-center gap-2"
                 >
                   <Map className="h-4 w-4" />
                   Ver en Mapa
@@ -197,7 +227,7 @@ const Index = () => {
                 
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button>
+                    <Button className="flex-1 md:flex-none">
                       <Plus className="h-4 w-4 mr-2" />
                       Añadir Propiedad
                     </Button>

@@ -44,8 +44,6 @@ const PropertyCard = ({
     return ['/placeholder.svg'];
   }, [image_urls, image_url]);
 
-  console.log('PropertyCard - Images:', { title, images });
-
   return (
     <Card className={`overflow-hidden transition-all duration-300 ${
       isHighlighted ? 'ring-2 ring-primary scale-105' : ''
@@ -71,24 +69,24 @@ const PropertyCard = ({
           </CarouselContent>
           {images.length > 1 && (
             <>
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0" />
+              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
+              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
             </>
           )}
         </Carousel>
       </div>
 
-      <div className="p-4">
-        <h3 className="font-heading font-semibold text-lg mb-2">{title}</h3>
-        <p className="text-2xl font-bold text-primary mb-2">€{price.toLocaleString()}</p>
-        <p className="text-gray-600 mb-2">{location}</p>
-        <div className="flex justify-between text-sm text-gray-500">
+      <div className="p-3 md:p-4">
+        <h3 className="font-heading font-semibold text-base md:text-lg mb-2 line-clamp-2">{title}</h3>
+        <p className="text-xl md:text-2xl font-bold text-primary mb-2">€{price.toLocaleString()}</p>
+        <p className="text-gray-600 mb-2 text-sm md:text-base">{location}</p>
+        <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-gray-500">
           <span>{bedrooms} hab.</span>
           <span>{bathrooms} baños</span>
           <span>{size} m²</span>
           {has_garden && (
             <span className="flex items-center gap-1">
-              <Trees className="h-4 w-4" />
+              <Trees className="h-3 w-3 md:h-4 md:w-4" />
               Jardín
             </span>
           )}
