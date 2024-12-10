@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Plus, Map } from 'lucide-react';
@@ -29,6 +29,7 @@ const Index = () => {
   const [showMap, setShowMap] = useState(false);
   const [sortOrder, setSortOrder] = useState<string>('newest');
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const propertiesPerPage = 12;
 
   const { data: properties = [], isLoading, error } = useQuery({
@@ -120,7 +121,7 @@ const Index = () => {
     };
 
     initializeProperties();
-  }, []);
+  }, [queryClient]);
 
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Cargando propiedades...</div>;
