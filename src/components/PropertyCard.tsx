@@ -34,7 +34,6 @@ const PropertyCard = ({
   has_garden,
   isHighlighted = false 
 }: PropertyCardProps) => {
-  // Preparar el array de imágenes, priorizando image_urls
   const images = React.useMemo(() => {
     if (image_urls && image_urls.length > 0) {
       return image_urls;
@@ -72,8 +71,8 @@ const PropertyCard = ({
           </CarouselContent>
           {images.length > 1 && (
             <>
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
+              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0" />
+              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0" />
             </>
           )}
         </Carousel>
