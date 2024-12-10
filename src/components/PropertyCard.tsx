@@ -36,14 +36,20 @@ const PropertyCard = ({
 }: PropertyCardProps) => {
   // Usar image_urls si está disponible y tiene elementos, si no usar image_url
   const allImages = React.useMemo(() => {
+    const images = [];
     if (image_urls && image_urls.length > 0) {
-      return image_urls;
+      images.push(...image_urls);
+    } else if (image_url) {
+      images.push(image_url);
     }
-    if (image_url) {
-      return [image_url];
+    // Si no hay imágenes, usar un placeholder
+    if (images.length === 0) {
+      images.push('/placeholder.svg');
     }
-    return ['/placeholder.svg'];
+    return images;
   }, [image_urls, image_url]);
+
+  console.log('Images for property:', title, allImages); // Para debugging
 
   return (
     <Card className={`property-card overflow-hidden transition-all duration-300 ${

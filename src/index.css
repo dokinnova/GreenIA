@@ -17,3 +17,12 @@
 .btn-primary {
   @apply bg-primary hover:bg-primary-hover text-primary-foreground font-semibold py-2 px-4 rounded-md transition-colors duration-200;
 }
+
+/* Estilos adicionales para el carrusel */
+.carousel-button {
+  @apply bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-md;
+}
+
+.carousel img {
+  @apply w-full h-full object-cover;
+}
