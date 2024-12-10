@@ -109,7 +109,7 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       <MapContainer
         className="h-screen w-full"
-        center={mapCenter}
+        center={mapCenter as [number, number]}
         zoom={6}
         scrollWheelZoom={true}
       >
