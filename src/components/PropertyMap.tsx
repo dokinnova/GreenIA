@@ -4,9 +4,10 @@ import { Button } from './ui/button';
 import { X } from 'lucide-react';
 import type { PropertyMapProps } from '@/data/properties/types';
 import { getPropertyPosition, defaultIcon } from '@/utils/map';
+import 'leaflet/dist/leaflet.css';
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
-  const defaultPosition = [51.505, -0.09]; // Default position for the map
+  const defaultPosition: [number, number] = [40.4168, -3.7038]; // Madrid como posición por defecto
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -17,13 +18,12 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
-        center={defaultPosition}
+        defaultCenter={defaultPosition}
         zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
@@ -35,7 +35,6 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
             <Marker 
               key={property.id} 
               position={position}
-              icon={defaultIcon}
             >
               <Popup>
                 <div className="p-2">

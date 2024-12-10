@@ -23,3 +23,8 @@ export interface PropertyFilters {
   bathrooms?: number;
   keywords: string[];
 }
+
+export interface PropertyMapProps {
+  properties: Property[];
+  onClose: () => void;
+}
