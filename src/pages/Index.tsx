@@ -88,6 +88,11 @@ const Index = () => {
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         
         <div className="container mx-auto text-center relative z-10">
+          <img 
+            src="/logo.svg" 
+            alt="GrennIA Logo" 
+            className="h-12 mx-auto mb-8"
+          />
           <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6">
             Encuentra tu hogar ideal
           </h1>
