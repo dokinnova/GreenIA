@@ -45,25 +45,23 @@ const PropertyCard = ({
   }, [image_urls, image_url]);
 
   return (
-    <Card className={`overflow-hidden transition-all duration-300 ${
+    <Card className={`w-full overflow-hidden transition-all duration-300 ${
       isHighlighted ? 'ring-2 ring-primary scale-105' : ''
     }`}>
-      <div className="relative aspect-video">
+      <div className="relative w-full aspect-[4/3]">
         <Carousel className="w-full">
           <CarouselContent>
             {images.map((img, index) => (
-              <CarouselItem key={index}>
-                <div className="relative aspect-video">
-                  <img 
-                    src={img} 
-                    alt={`${title} - imagen ${index + 1}`} 
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      console.error('Error loading image:', img);
-                      e.currentTarget.src = '/placeholder.svg';
-                    }}
-                  />
-                </div>
+              <CarouselItem key={index} className="relative w-full aspect-[4/3]">
+                <img 
+                  src={img} 
+                  alt={`${title} - imagen ${index + 1}`} 
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error('Error loading image:', img);
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
+                />
               </CarouselItem>
             ))}
           </CarouselContent>
