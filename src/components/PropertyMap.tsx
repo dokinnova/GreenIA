@@ -83,8 +83,8 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
       </div>
       
       <MapContainer
-        center={defaultPosition as L.LatLngExpression}
-        zoom={6} // Zoom reducido para ver toda España
+        defaultCenter={defaultPosition}
+        zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
@@ -94,7 +94,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
           return (
             <LeafletMarker
               key={property.id}
-              position={coordinates as L.LatLngExpression}
+              position={coordinates}
             >
               <LeafletPopup>
                 <div className="p-2">
