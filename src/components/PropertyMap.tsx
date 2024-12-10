@@ -109,9 +109,10 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       <MapContainer
         className="h-screen w-full"
-        center={mapCenter as [number, number]}
+        center={mapCenter}
         zoom={6}
         scrollWheelZoom={true}
+        key={mapCenter.toString()}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
