@@ -83,7 +83,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onClose }) => {
       </div>
       
       <MapContainer
-        defaultCenter={defaultPosition}
+        center={defaultPosition}
         zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
