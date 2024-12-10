@@ -26,9 +26,9 @@ interface GeocodingResult {
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
   // Default center coordinates (center of Spain)
-  const defaultCenter: L.LatLngExpression = [40.4168, -3.7038];
+  const defaultCenter: [number, number] = [40.4168, -3.7038];
   const [propertyCoordinates, setPropertyCoordinates] = useState<Map<number, L.LatLngExpression>>(new Map());
-  const [mapCenter, setMapCenter] = useState<L.LatLngExpression>(defaultCenter);
+  const [mapCenter, setMapCenter] = useState<[number, number]>(defaultCenter);
   const [isLoading, setIsLoading] = useState(true);
 
   // Function to convert address to coordinates using Nominatim
@@ -63,8 +63,8 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
         const coords = await getCoordinates(property.location);
         if (coords) {
           coordinates.set(property.id, coords);
-          sumLat += coords[0];
-          sumLng += coords[1];
+          sumLat += (coords as [number, number])[0];
+          sumLng += (coords as [number, number])[1];
           validCoordinatesCount++;
         }
         // Add a small delay between requests
@@ -115,8 +115,8 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
         key={mapCenter.toString()}
       >
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {properties.map((property) => {
           const coordinates = propertyCoordinates.get(property.id);
