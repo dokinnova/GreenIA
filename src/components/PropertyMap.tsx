@@ -5,9 +5,10 @@ import { X } from 'lucide-react';
 import type { PropertyMapProps } from '@/data/properties/types';
 import { getPropertyPosition, defaultIcon } from '@/utils/map';
 import 'leaflet/dist/leaflet.css';
+import { LatLngExpression } from 'leaflet';
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
-  const defaultPosition: [number, number] = [40.4168, -3.7038]; // Madrid como posición por defecto
+  const defaultPosition: LatLngExpression = [40.4168, -3.7038]; // Madrid como posición por defecto
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -35,7 +36,7 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
           return (
             <Marker 
               key={property.id} 
-              position={position}
+              position={position as LatLngExpression}
               icon={defaultIcon}
             >
               <Popup>
