@@ -8,7 +8,7 @@ import 'leaflet/dist/leaflet.css';
 import { LatLngExpression } from 'leaflet';
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
-  const defaultPosition: LatLngExpression = [40.4168, -3.7038]; // Madrid como posición por defecto
+  const defaultPosition: LatLngExpression = [40.4168, -3.7038]; // Madrid as default position
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -23,6 +23,7 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
         zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
+        className="z-0"
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
