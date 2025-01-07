@@ -19,8 +19,8 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
-        center={defaultPosition}
-        zoom={6}
+        defaultCenter={defaultPosition}
+        defaultZoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
