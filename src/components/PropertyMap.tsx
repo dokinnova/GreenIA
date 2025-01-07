@@ -19,8 +19,8 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
-        defaultCenter={defaultPosition}
-        defaultZoom={6}
+        center={defaultPosition}
+        zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
       >
@@ -36,7 +36,7 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
           return (
             <Marker 
               key={property.id} 
-              position={position as LatLngExpression}
+              position={position}
               icon={defaultIcon}
             >
               <Popup>

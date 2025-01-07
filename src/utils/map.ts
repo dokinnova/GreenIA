@@ -6,7 +6,7 @@ export const getPropertyPosition = (location: string): [number, number] | null =
 };
 
 // Custom icon for map markers
-export const defaultIcon = new L.Icon({
+export const defaultIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
   iconSize: [25, 41],
