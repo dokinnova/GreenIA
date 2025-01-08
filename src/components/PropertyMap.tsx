@@ -19,8 +19,8 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
-        defaultCenter={defaultPosition}
-        defaultZoom={6}
+        center={defaultPosition}
+        zoom={6}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
         className="z-0"
@@ -38,7 +38,6 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
             <Marker 
               key={property.id} 
               position={position}
-              icon={defaultIcon}
             >
               <Popup>
                 <div className="p-2">
