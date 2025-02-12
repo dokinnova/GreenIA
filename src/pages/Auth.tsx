@@ -36,7 +36,7 @@ const AuthPage = () => {
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           providers={[]}
-          view="sign_up"
+          view="sign_in"
           showLinks={true}
           redirectTo={`${window.location.origin}/profile`}
           localization={{
@@ -49,7 +49,7 @@ const AuthPage = () => {
                 button_label: "Registrarse",
                 loading_button_label: "Registrando...",
                 social_provider_text: "Registrarse con {{provider}}",
-                link_text: "¿Ya tienes una cuenta? Inicia sesión",
+                link_text: "¿No tienes una cuenta? Regístrate",
                 confirmation_text: "Revisa tu correo electrónico para confirmar tu cuenta"
               },
               sign_in: {
