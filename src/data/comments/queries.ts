@@ -1,37 +1,37 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import type { Comment, CommentResponse, CommentFilters } from "./types";
-import type { PostgrestFilterBuilder } from '@supabase/postgrest-js';
 
 export const fetchComments = async (filters?: CommentFilters): Promise<Comment[]> => {
+  // Start with a base query
   const baseQuery = supabase
     .from('property_comments')
     .select('*');
 
-  let query = baseQuery;
+  // Apply filters sequentially
+  let finalQuery = baseQuery;
 
   if (filters) {
     if (filters.sentiment) {
-      query = query.eq('sentiment', filters.sentiment);
+      finalQuery = finalQuery.eq('sentiment', filters.sentiment);
     }
     if (filters.source) {
-      query = query.eq('source', filters.source);
+      finalQuery = finalQuery.eq('source', filters.source);
     }
     if (filters.location) {
-      query = query.eq('location', filters.location);
+      finalQuery = finalQuery.eq('location', filters.location);
     }
     if (filters.searchTerm) {
-      query = query.or(`client_name.ilike.%${filters.searchTerm}%,comment_text.ilike.%${filters.searchTerm}%`);
+      finalQuery = finalQuery.or(`client_name.ilike.%${filters.searchTerm}%,comment_text.ilike.%${filters.searchTerm}%`);
     }
     if (filters.startDate && filters.endDate) {
-      query = query.gte('created_at', filters.startDate.toISOString())
-                  .lte('created_at', filters.endDate.toISOString());
+      finalQuery = finalQuery.gte('created_at', filters.startDate.toISOString())
+                           .lte('created_at', filters.endDate.toISOString());
     }
   }
 
-  query = query.order('created_at', { ascending: false });
-
-  const { data, error } = await query;
+  // Apply final ordering
+  const { data, error } = await finalQuery.order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching comments:', error);
