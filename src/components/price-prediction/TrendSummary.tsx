@@ -10,6 +10,9 @@ interface TrendSummaryProps {
 }
 
 export const TrendSummary = ({ trend, isPositiveTrend }: TrendSummaryProps) => {
+  // Calculamos si es positivo basándonos en el porcentaje de cambio de precio
+  const isMarketGrowing = trend?.price_change_percentage > 0;
+
   return (
     <Card className="p-6 lg:col-span-1">
       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -19,8 +22,8 @@ export const TrendSummary = ({ trend, isPositiveTrend }: TrendSummaryProps) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
           <span className="text-sm text-gray-600">Variación Anual</span>
-          <span className={`font-semibold ${isPositiveTrend ? 'text-green-600' : 'text-red-600'}`}>
-            {isPositiveTrend ? '+' : ''}{trend?.price_change_percentage.toFixed(2)}%
+          <span className={`font-semibold ${isMarketGrowing ? 'text-green-600' : 'text-red-600'}`}>
+            {isMarketGrowing ? '+' : ''}{trend?.price_change_percentage.toFixed(2)}%
           </span>
         </div>
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -31,17 +34,17 @@ export const TrendSummary = ({ trend, isPositiveTrend }: TrendSummaryProps) => {
         </div>
         <div className="p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            {isPositiveTrend ? (
+            {isMarketGrowing ? (
               <TrendingUp className="h-5 w-5 text-green-600" />
             ) : (
               <TrendingDown className="h-5 w-5 text-red-600" />
             )}
             <span className="font-medium">
-              {isPositiveTrend ? 'Mercado en Crecimiento' : 'Mercado en Descenso'}
+              {isMarketGrowing ? 'Mercado en Crecimiento' : 'Mercado en Descenso'}
             </span>
           </div>
           <p className="text-sm text-gray-600">
-            {isPositiveTrend
+            {isMarketGrowing
               ? 'Los precios muestran una tendencia alcista. Considera invertir pronto.'
               : 'Los precios están bajando. Podría ser un buen momento para comprar.'}
           </p>
