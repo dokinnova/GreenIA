@@ -1,3 +1,4 @@
+
 import { PropertyFilters } from '../components/Chatbot';
 import type { Property } from '@/data/properties/types';
 
