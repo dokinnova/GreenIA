@@ -31,8 +31,8 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
     defaultValues,
   });
 
-  // Actualizar el formulario cuando cambian los valores por defecto
   React.useEffect(() => {
+    console.log('Default values changed:', defaultValues);
     if (defaultValues) {
       form.reset(defaultValues);
     }
@@ -40,8 +40,11 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
+      console.log('Submitting form with data:', data);
+      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        console.error('No user found');
         toast({
           title: 'Error',
           description: 'Usuario no encontrado',
@@ -49,9 +52,11 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
         });
         return;
       }
-
+      
+      console.log('Updating profile for user:', user.id);
+      
       // Actualizar el perfil
-      const { error: updateError } = await supabase
+      const { error: updateError, data: updateData } = await supabase
         .from('profiles')
         .update({
           full_name: data.full_name,
@@ -69,22 +74,26 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
         return;
       }
 
+      console.log('Profile updated successfully:', updateData);
+
       // Obtener los datos actualizados
       const { data: updatedProfile, error: fetchError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .maybeSingle();
+        .single();
 
       if (fetchError) {
         console.error('Error fetching updated profile:', fetchError);
-      } else if (updatedProfile) {
+      } else {
+        console.log('Retrieved updated profile:', updatedProfile);
         // Actualizar el formulario con los nuevos datos
         const updatedValues = {
           ...data,
           full_name: updatedProfile.full_name || '',
           phone_number: updatedProfile.phone_number || '',
         };
+        console.log('Setting new form values:', updatedValues);
         form.reset(updatedValues);
         onFormChange?.(updatedValues);
       }
