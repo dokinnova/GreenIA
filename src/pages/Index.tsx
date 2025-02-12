@@ -149,18 +149,13 @@ const Index = () => {
   const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
   const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
 
-  const FiltersComponent = () => (
-    <PropertyFilters onFilter={handleFilter} onSort={handleSort} />
-  );
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div 
-        className="relative py-12 md:py-20 text-white"
+        className="relative py-12 md:py-20 text-white bg-cover bg-center"
         style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2000")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          height: '400px'
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
