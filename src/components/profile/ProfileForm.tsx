@@ -31,16 +31,12 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
     defaultValues,
   });
 
+  // Actualizar el formulario cuando cambian los valores por defecto
   React.useEffect(() => {
-    form.reset(defaultValues);
+    if (defaultValues) {
+      form.reset(defaultValues);
+    }
   }, [defaultValues, form]);
-
-  React.useEffect(() => {
-    const subscription = form.watch((value) => {
-      onFormChange?.(value as ProfileFormValues);
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, onFormChange]);
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
@@ -54,7 +50,8 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
         return;
       }
 
-      const { error } = await supabase
+      // Actualizar el perfil
+      const { error: updateError } = await supabase
         .from('profiles')
         .update({
           full_name: data.full_name,
@@ -62,19 +59,40 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
         })
         .eq('id', user.id);
 
-      if (error) {
-        console.error('Error updating profile:', error);
+      if (updateError) {
+        console.error('Error updating profile:', updateError);
         toast({
           title: 'Error',
           description: 'No se pudo actualizar el perfil',
           variant: 'destructive',
         });
-      } else {
-        toast({
-          title: 'Éxito',
-          description: 'Perfil actualizado correctamente',
-        });
+        return;
       }
+
+      // Obtener los datos actualizados
+      const { data: updatedProfile, error: fetchError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (fetchError) {
+        console.error('Error fetching updated profile:', fetchError);
+      } else if (updatedProfile) {
+        // Actualizar el formulario con los nuevos datos
+        const updatedValues = {
+          ...data,
+          full_name: updatedProfile.full_name || '',
+          phone_number: updatedProfile.phone_number || '',
+        };
+        form.reset(updatedValues);
+        onFormChange?.(updatedValues);
+      }
+
+      toast({
+        title: 'Éxito',
+        description: 'Perfil actualizado correctamente',
+      });
     } catch (error) {
       console.error('Error in onSubmit:', error);
       toast({

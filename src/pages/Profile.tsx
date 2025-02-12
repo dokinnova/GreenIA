@@ -28,6 +28,7 @@ const ProfilePage = () => {
         return;
       }
 
+      console.log('Loading profile for user:', user.id);
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
@@ -39,11 +40,14 @@ const ProfilePage = () => {
         return;
       }
 
-      setFormValues({
+      console.log('Profile loaded:', profile);
+      const updatedValues = {
         full_name: profile?.full_name || '',
         phone_number: profile?.phone_number || '',
         email: user.email || '',
-      });
+      };
+      console.log('Setting form values:', updatedValues);
+      setFormValues(updatedValues);
 
       if (profile) {
         setAvatarUrl(profile.avatar_url || null);
