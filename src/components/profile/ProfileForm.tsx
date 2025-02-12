@@ -32,6 +32,10 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
   });
 
   React.useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
+
+  React.useEffect(() => {
     const subscription = form.watch((value) => {
       onFormChange?.(value as ProfileFormValues);
     });
@@ -39,27 +43,44 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
   }, [form.watch, onFormChange]);
 
   const onSubmit = async (data: ProfileFormValues) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: 'Error',
+          description: 'Usuario no encontrado',
+          variant: 'destructive',
+        });
+        return;
+      }
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        full_name: data.full_name,
-        phone_number: data.phone_number,
-      })
-      .eq('id', user.id);
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: data.full_name,
+          phone_number: data.phone_number,
+        })
+        .eq('id', user.id);
 
-    if (error) {
+      if (error) {
+        console.error('Error updating profile:', error);
+        toast({
+          title: 'Error',
+          description: 'No se pudo actualizar el perfil',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Éxito',
+          description: 'Perfil actualizado correctamente',
+        });
+      }
+    } catch (error) {
+      console.error('Error in onSubmit:', error);
       toast({
         title: 'Error',
-        description: 'No se pudo actualizar el perfil',
+        description: 'Ocurrió un error al actualizar el perfil',
         variant: 'destructive',
-      });
-    } else {
-      toast({
-        title: 'Éxito',
-        description: 'Perfil actualizado correctamente',
       });
     }
   };
@@ -77,7 +98,7 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
                 <Input 
                   {...field} 
                   disabled 
-                  className="bg-gray-100 text-gray-900 font-medium" 
+                  className="bg-gray-100 text-gray-900 font-medium border-gray-300" 
                 />
               </FormControl>
               <FormMessage />

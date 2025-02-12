@@ -23,33 +23,32 @@ const ProfilePage = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        console.log('No user found');
+        console.log('No user found, redirecting to auth');
+        navigate('/auth');
         return;
       }
 
-      console.log('User email from auth:', user.email);
-
       const { data: profile, error } = await supabase
         .from('profiles')
-        .select('full_name, phone_number, avatar_url, two_factor_enabled')
+        .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error loading profile:', error);
         return;
       }
 
-      const updatedValues = {
+      setFormValues({
         full_name: profile?.full_name || '',
         phone_number: profile?.phone_number || '',
         email: user.email || '',
-      };
+      });
 
-      console.log('Setting form values:', updatedValues);
-      setFormValues(updatedValues);
-      setAvatarUrl(profile?.avatar_url || null);
-      setTwoFactorEnabled(profile?.two_factor_enabled || false);
+      if (profile) {
+        setAvatarUrl(profile.avatar_url || null);
+        setTwoFactorEnabled(profile.two_factor_enabled || false);
+      }
     } catch (error) {
       console.error('Error in loadUserProfile:', error);
     }
@@ -57,7 +56,7 @@ const ProfilePage = () => {
 
   React.useEffect(() => {
     loadUserProfile();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -90,7 +89,7 @@ const ProfilePage = () => {
           
           <ProfileForm
             defaultValues={formValues}
-            onFormChange={(values) => setFormValues(values)}
+            onFormChange={setFormValues}
           />
 
           <TwoFactorToggle
