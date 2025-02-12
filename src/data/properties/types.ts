@@ -1,3 +1,4 @@
+
 export interface Property {
   id: number;
   title: string;
@@ -12,6 +13,7 @@ export interface Property {
   has_garden: boolean;
   created_at: string;
   updated_at: string;
+  rating?: number;
 }
 
 export interface PropertyFilters {

@@ -21,8 +21,8 @@ interface PropertyFiltersProps {
 const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
   const [priceRange, setPriceRange] = React.useState([0, 1000000]);
   const [sizeRange, setSizeRange] = React.useState([0, 500]);
-  const [bedrooms, setBedrooms] = React.useState<string>("");
-  const [bathrooms, setBathrooms] = React.useState<string>("");
+  const [bedrooms, setBedrooms] = React.useState<string>("any");
+  const [bathrooms, setBathrooms] = React.useState<string>("any");
   const [hasGarden, setHasGarden] = React.useState(false);
   const [minRating, setMinRating] = React.useState<number>(0);
 
@@ -32,8 +32,8 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
       maxPrice: priceRange[1],
       minSize: sizeRange[0],
       maxSize: sizeRange[1],
-      bedrooms: bedrooms ? parseInt(bedrooms) : undefined,
-      bathrooms: bathrooms ? parseInt(bathrooms) : undefined,
+      bedrooms: bedrooms !== "any" ? parseInt(bedrooms) : undefined,
+      bathrooms: bathrooms !== "any" ? parseInt(bathrooms) : undefined,
       hasGarden,
       minRating,
     });
@@ -42,8 +42,8 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
   const handleReset = () => {
     setPriceRange([0, 1000000]);
     setSizeRange([0, 500]);
-    setBedrooms("");
-    setBathrooms("");
+    setBedrooms("any");
+    setBathrooms("any");
     setHasGarden(false);
     setMinRating(0);
     onFilter({});
@@ -135,7 +135,7 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
                 <SelectValue placeholder="Cualquiera" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Cualquiera</SelectItem>
+                <SelectItem value="any">Cualquiera</SelectItem>
                 {[1, 2, 3, 4, 5].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num}+ habitaciones
@@ -152,7 +152,7 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
                 <SelectValue placeholder="Cualquiera" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Cualquiera</SelectItem>
+                <SelectItem value="any">Cualquiera</SelectItem>
                 {[1, 2, 3, 4].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num}+ baños
