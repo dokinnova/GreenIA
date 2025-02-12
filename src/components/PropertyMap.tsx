@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 import type { PropertyMapProps } from '@/data/properties/types';
 import { getPropertyPosition } from '@/utils/map';
 import 'leaflet/dist/leaflet.css';
-import { LatLngExpression } from 'leaflet';
+import { LatLngExpression, Map as LeafletMap } from 'leaflet';
 import L from 'leaflet';
 
 // Fix for default marker icons in Leaflet with React
@@ -19,6 +19,7 @@ L.Icon.Default.mergeOptions({
 
 const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
   const defaultPosition: LatLngExpression = [40.4168, -3.7038]; // Madrid as default position
+  const mapRef = React.useRef<LeafletMap>(null);
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
@@ -29,16 +30,17 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
+        ref={mapRef}
         className="z-0"
         style={{ height: '100%', width: '100%' }}
-        center={defaultPosition}
+        bounds={[defaultPosition]}
         zoom={6}
         scrollWheelZoom={true}
         doubleClickZoom={true}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attributionControl={true}
         />
         
         {properties.map((property) => {
