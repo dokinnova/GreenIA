@@ -10,6 +10,7 @@ import Privacy from "./pages/Privacy";
 import Dashboard from "./pages/Dashboard";
 import PropertiesManagement from "./pages/PropertiesManagement";
 import Statistics from "./pages/Statistics";
+import PricePrediction from "./pages/PricePrediction";
 import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/properties-management" element={<PropertiesManagement />} />
           <Route path="/statistics" element={<Statistics />} />
+          <Route path="/price-prediction" element={<PricePrediction />} />
         </Routes>
         <CookieConsent />
       </BrowserRouter>
