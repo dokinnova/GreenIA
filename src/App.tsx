@@ -13,6 +13,7 @@ import Statistics from "./pages/Statistics";
 import PricePrediction from "./pages/PricePrediction";
 import SentimentAnalysis from "./pages/SentimentAnalysis";
 import MarketAnalysis from "./pages/MarketAnalysis";
+import AdminAutomation from "./pages/AdminAutomation";
 import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/price-prediction" element={<PricePrediction />} />
           <Route path="/sentiment-analysis" element={<SentimentAnalysis />} />
           <Route path="/market-analysis" element={<MarketAnalysis />} />
+          <Route path="/admin-automation" element={<AdminAutomation />} />
         </Routes>
         <CookieConsent />
       </BrowserRouter>
