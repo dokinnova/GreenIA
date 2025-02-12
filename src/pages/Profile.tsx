@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -7,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { HomeIcon, Upload } from 'lucide-react';
+import { HomeIcon, Upload, ShieldCheck, ShieldOff } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -16,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Switch } from '@/components/ui/switch';
 
 interface ProfileFormValues {
   full_name: string;
@@ -26,6 +28,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
+  const [twoFactorEnabled, setTwoFactorEnabled] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
   const form = useForm<ProfileFormValues>({
@@ -45,7 +48,7 @@ const ProfilePage = () => {
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('full_name, phone_number, avatar_url')
+      .select('full_name, phone_number, avatar_url, two_factor_enabled')
       .eq('id', user.id)
       .single();
 
@@ -55,6 +58,7 @@ const ProfilePage = () => {
         phone_number: profile.phone_number || '',
       });
       setAvatarUrl(profile.avatar_url);
+      setTwoFactorEnabled(profile.two_factor_enabled || false);
     }
   };
 
@@ -142,9 +146,36 @@ const ProfilePage = () => {
     fileInputRef.current?.click();
   };
 
-  // Función para obtener las iniciales del nombre
   const getInitials = (name: string) => {
     return name?.charAt(0).toUpperCase() || '?';
+  };
+
+  const handleTwoFactorToggle = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const newTwoFactorEnabled = !twoFactorEnabled;
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        two_factor_enabled: newTwoFactorEnabled,
+      })
+      .eq('id', user.id);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo actualizar la configuración de 2FA',
+        variant: 'destructive',
+      });
+    } else {
+      setTwoFactorEnabled(newTwoFactorEnabled);
+      toast({
+        title: 'Éxito',
+        description: `Autenticación de dos factores ${newTwoFactorEnabled ? 'activada' : 'desactivada'} correctamente`,
+      });
+    }
   };
 
   return (
@@ -217,6 +248,26 @@ const ProfilePage = () => {
                   </FormItem>
                 )}
               />
+
+              <div className="flex items-center justify-between space-x-2 py-4">
+                <div className="flex flex-col space-y-1">
+                  <span className="font-medium">Autenticación de dos factores</span>
+                  <span className="text-sm text-gray-500">
+                    {twoFactorEnabled ? 'Activada' : 'Desactivada'}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {twoFactorEnabled ? (
+                    <ShieldCheck className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <ShieldOff className="h-4 w-4 text-gray-400" />
+                  )}
+                  <Switch
+                    checked={twoFactorEnabled}
+                    onCheckedChange={handleTwoFactorToggle}
+                  />
+                </div>
+              </div>
 
               <div className="flex flex-col gap-4">
                 <Button type="submit" className="w-full">
