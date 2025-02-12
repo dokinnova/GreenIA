@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 
 export const AuthContext = React.createContext<{
@@ -15,7 +14,6 @@ export const AuthContext = React.createContext<{
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = React.useState<Session | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     // Verificar sesión inicial
@@ -29,13 +27,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (!session) {
-        navigate('/auth');
-      }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ session, loading }}>

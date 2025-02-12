@@ -12,14 +12,14 @@ const AuthPage = () => {
   React.useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        navigate('/dashboard');
+        navigate('/profile');
       }
     });
 
     // Check if user is already signed in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate('/dashboard');
+        navigate('/profile');
       }
     });
 
@@ -38,7 +38,7 @@ const AuthPage = () => {
           providers={[]}
           view="sign_up"
           showLinks={true}
-          redirectTo={`${window.location.origin}/dashboard`}
+          redirectTo={`${window.location.origin}/profile`}
           localization={{
             variables: {
               sign_in: {

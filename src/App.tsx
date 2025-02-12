@@ -30,10 +30,13 @@ const App = () => (
           <Toaster />
           <Sonner />
           <Routes>
+            {/* Rutas públicas */}
             <Route path="/" element={<Index />} />
             <Route path="/legal" element={<Legal />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/auth" element={<AuthPage />} />
+            
+            {/* Rutas protegidas */}
             <Route path="/profile" element={
               <ProtectedRoute>
                 <ProfilePage />
