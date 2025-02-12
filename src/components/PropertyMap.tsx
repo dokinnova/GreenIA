@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Button } from './ui/button';
@@ -28,15 +29,14 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
-        defaultCenter={defaultPosition}
-        defaultZoom={6}
-        scrollWheelZoom={true}
+        center={defaultPosition}
+        zoom={6}
         style={{ height: '100%', width: '100%' }}
         className="z-0"
+        scrollWheelZoom
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
         {properties.map((property) => {
