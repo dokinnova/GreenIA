@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { 
@@ -13,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchComments, updateCommentStatus } from '@/data/comments/queries';
-import type { Comment } from '@/data/comments/types';
+import type { Comment, CommentFilters } from '@/data/comments/types';
 import { toast } from 'sonner';
 
 interface CommentsListProps {
