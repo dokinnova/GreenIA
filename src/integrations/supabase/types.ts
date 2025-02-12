@@ -286,7 +286,10 @@ export type Database = {
           image_urls: string[] | null
           keywords: string[] | null
           location: string
+          location_rating: number | null
           price: number
+          price_rating: number | null
+          quality_rating: number | null
           rating: number | null
           size: number
           title: string
@@ -302,7 +305,10 @@ export type Database = {
           image_urls?: string[] | null
           keywords?: string[] | null
           location: string
+          location_rating?: number | null
           price: number
+          price_rating?: number | null
+          quality_rating?: number | null
           rating?: number | null
           size: number
           title: string
@@ -318,7 +324,10 @@ export type Database = {
           image_urls?: string[] | null
           keywords?: string[] | null
           location?: string
+          location_rating?: number | null
           price?: number
+          price_rating?: number | null
+          quality_rating?: number | null
           rating?: number | null
           size?: number
           title?: string
