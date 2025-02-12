@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,25 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Filter, Search } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import type { CommentFilters } from '@/data/comments/types';
 
-export const Filters = () => {
+interface FiltersProps {
+  onFiltersChange: (filters: CommentFilters) => void;
+}
+
+export const Filters = ({ onFiltersChange }: FiltersProps) => {
+  const [filters, setFilters] = useState<CommentFilters>({});
+
+  const handleFilterChange = (key: keyof CommentFilters, value: any) => {
+    const newFilters = { ...filters, [key]: value };
+    if (value === 'all') {
+      delete newFilters[key];
+    }
+    setFilters(newFilters);
+    onFiltersChange(newFilters);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -26,13 +43,17 @@ export const Filters = () => {
           <label className="text-sm font-medium">Buscar</label>
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Buscar comentarios..." className="pl-8" />
+            <Input 
+              placeholder="Buscar comentarios..." 
+              className="pl-8"
+              onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Sentimiento</label>
-          <Select>
+          <Select onValueChange={(value) => handleFilterChange('sentiment', value === 'all' ? undefined : value)}>
             <SelectTrigger>
               <SelectValue placeholder="Todos" />
             </SelectTrigger>
@@ -47,7 +68,7 @@ export const Filters = () => {
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Canal</label>
-          <Select>
+          <Select onValueChange={(value) => handleFilterChange('source', value === 'all' ? undefined : value)}>
             <SelectTrigger>
               <SelectValue placeholder="Todos los canales" />
             </SelectTrigger>
@@ -62,7 +83,7 @@ export const Filters = () => {
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Ubicación</label>
-          <Select>
+          <Select onValueChange={(value) => handleFilterChange('location', value === 'all' ? undefined : value)}>
             <SelectTrigger>
               <SelectValue placeholder="Todas las ubicaciones" />
             </SelectTrigger>
@@ -75,8 +96,15 @@ export const Filters = () => {
           </Select>
         </div>
 
-        <Button className="w-full" variant="outline">
-          Aplicar Filtros
+        <Button 
+          className="w-full" 
+          variant="outline"
+          onClick={() => {
+            setFilters({});
+            onFiltersChange({});
+          }}
+        >
+          Limpiar Filtros
         </Button>
       </CardContent>
     </Card>

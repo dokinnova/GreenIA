@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { 
@@ -16,6 +15,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchComments, updateCommentStatus } from '@/data/comments/queries';
 import type { Comment } from '@/data/comments/types';
 import { toast } from 'sonner';
+
+interface CommentsListProps {
+  filters?: CommentFilters;
+}
 
 const getSentimentIcon = (sentiment: Comment['sentiment']) => {
   switch (sentiment) {
@@ -41,12 +44,12 @@ const getSourceBadge = (source: Comment['source']) => {
   }
 };
 
-export const CommentsList = () => {
+export const CommentsList = ({ filters }: CommentsListProps) => {
   const queryClient = useQueryClient();
 
   const { data: comments = [], isLoading } = useQuery({
-    queryKey: ['comments'],
-    queryFn: () => fetchComments(),
+    queryKey: ['comments', filters],
+    queryFn: () => fetchComments(filters),
   });
 
   const updateStatusMutation = useMutation({
