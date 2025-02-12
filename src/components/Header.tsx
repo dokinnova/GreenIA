@@ -12,8 +12,7 @@ const Header = () => {
   return (
     <div className="fixed top-0 right-0 p-4 z-50">
       <Button
-        variant="outline"
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 bg-white text-primary hover:bg-gray-100"
         onClick={() => navigate(session ? '/dashboard' : '/auth')}
       >
         <UserRound className="h-4 w-4" />
