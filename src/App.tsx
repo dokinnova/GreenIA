@@ -9,6 +9,7 @@ import Legal from "./pages/Legal";
 import Privacy from "./pages/Privacy";
 import Dashboard from "./pages/Dashboard";
 import PropertiesManagement from "./pages/PropertiesManagement";
+import Statistics from "./pages/Statistics";
 import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/properties-management" element={<PropertiesManagement />} />
+          <Route path="/statistics" element={<Statistics />} />
         </Routes>
         <CookieConsent />
       </BrowserRouter>
