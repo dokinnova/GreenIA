@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Card } from './ui/card';
 import { Trees } from 'lucide-react';
+import { Progress } from './ui/progress';
 import {
   Carousel,
   CarouselContent,
@@ -44,6 +46,32 @@ const PropertyCard = ({
     return ['/placeholder.svg'];
   }, [image_urls, image_url]);
 
+  // Valor temporal para la valoración (1-6)
+  const rating = Math.floor(Math.random() * 6) + 1;
+
+  // Función para obtener el color basado en la valoración
+  const getRatingColor = (rating: number) => {
+    switch (rating) {
+      case 1:
+        return 'bg-red-500';
+      case 2:
+        return 'bg-orange-500';
+      case 3:
+        return 'bg-yellow-500';
+      case 4:
+        return 'bg-green-500';
+      case 5:
+        return 'bg-teal-500';
+      case 6:
+        return 'bg-blue-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  // Calcula el porcentaje para la barra de progreso
+  const ratingPercentage = (rating / 6) * 100;
+
   return (
     <Card className={`w-full overflow-hidden transition-all duration-300 ${
       isHighlighted ? 'ring-2 ring-primary scale-105' : ''
@@ -78,7 +106,7 @@ const PropertyCard = ({
         <h3 className="font-heading font-semibold text-base md:text-lg mb-2 line-clamp-2">{title}</h3>
         <p className="text-xl md:text-2xl font-bold text-primary mb-2">€{price.toLocaleString()}</p>
         <p className="text-gray-600 mb-2 text-sm md:text-base">{location}</p>
-        <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-gray-500">
+        <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-gray-500 mb-3">
           <span>{bedrooms} hab.</span>
           <span>{bathrooms} baños</span>
           <span>{size} m²</span>
@@ -88,6 +116,19 @@ const PropertyCard = ({
               Jardín
             </span>
           )}
+        </div>
+
+        {/* Barra de valoración */}
+        <div className="mt-3">
+          <div className="flex justify-between text-sm mb-1">
+            <span className="text-gray-600">Valoración</span>
+            <span className="font-semibold">{rating}/6</span>
+          </div>
+          <Progress 
+            value={ratingPercentage} 
+            className="h-2.5"
+            indicatorClassName={getRatingColor(rating)}
+          />
         </div>
       </div>
     </Card>
