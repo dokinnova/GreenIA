@@ -18,6 +18,7 @@ interface FiltersProps {
   propertyTypes: string[];
   onLocationChange: (value: string) => void;
   onPropertyTypeChange: (value: string) => void;
+  isLoadingLocations?: boolean;
 }
 
 export const Filters = ({
@@ -27,6 +28,7 @@ export const Filters = ({
   propertyTypes,
   onLocationChange,
   onPropertyTypeChange,
+  isLoadingLocations = false,
 }: FiltersProps) => {
   return (
     <Card className="p-6 mb-8 border-none shadow-lg">
@@ -39,6 +41,7 @@ export const Filters = ({
           <Select
             value={selectedLocation}
             onValueChange={onLocationChange}
+            disabled={isLoadingLocations}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Selecciona ubicación" />

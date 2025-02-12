@@ -12,7 +12,6 @@ import { TrendSummary } from '@/components/price-prediction/TrendSummary';
 import { PriceChart } from '@/components/price-prediction/PriceChart';
 
 const propertyTypes = [
-  "Todos",
   "Apartamento",
   "Casa",
   "Chalet",
@@ -21,8 +20,7 @@ const propertyTypes = [
 ];
 
 const PricePrediction = () => {
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
-  const [selectedPropertyType, setSelectedPropertyType] = useState<string>('Todos');
+  const [selectedPropertyType, setSelectedPropertyType] = useState<string>('Apartamento');
   const endDate = new Date();
   const startDate = subMonths(endDate, 12);
 
@@ -30,6 +28,15 @@ const PricePrediction = () => {
     queryKey: ['locations'],
     queryFn: getLocations
   });
+
+  const [selectedLocation, setSelectedLocation] = useState<string>(locations?.[0] || '');
+
+  // Update selectedLocation when locations are loaded
+  React.useEffect(() => {
+    if (locations.length > 0 && !selectedLocation) {
+      setSelectedLocation(locations[0]);
+    }
+  }, [locations, selectedLocation]);
 
   const { data: trends = [], isLoading: isLoadingTrends } = useQuery({
     queryKey: ['price-trends', selectedLocation],
@@ -57,6 +64,7 @@ const PricePrediction = () => {
           propertyTypes={propertyTypes}
           onLocationChange={setSelectedLocation}
           onPropertyTypeChange={setSelectedPropertyType}
+          isLoadingLocations={isLoadingLocations}
         />
 
         {/* Main Content */}
