@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Plus, Map } from 'lucide-react';
+import { Search, Plus, Map, LayoutDashboard } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import PropertyList from '@/components/PropertyList';
 import PropertyFilters from '@/components/PropertyFilters';
@@ -31,6 +32,7 @@ import {
 } from "@/components/ui/sheet";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -225,6 +227,15 @@ const Index = () => {
                 >
                   <Map className="h-4 w-4" />
                   Ver en Mapa
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/dashboard')}
+                  className="flex-1 md:flex-none items-center gap-2"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Panel de Control
                 </Button>
                 
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

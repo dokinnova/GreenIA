@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Legal from "./pages/Legal";
 import Privacy from "./pages/Privacy";
+import Dashboard from "./pages/Dashboard";
 import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
@@ -20,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/legal" element={<Legal />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
         <CookieConsent />
       </BrowserRouter>
