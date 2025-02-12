@@ -22,63 +22,49 @@ const Dashboard = () => {
       title: "Propiedades",
       description: "Gestiona todas las propiedades",
       icon: Building,
-      onClick: () => {
-        window.open('/properties-management', '_blank');
-      },
+      onClick: () => navigate('/properties-management'),
       bgColor: "bg-[#D3E4FD]"
     },
     {
       title: "Automatización de Procesos Administrativos",
       description: "Gestión de documentos, visitas y seguimiento de transacciones",
       icon: Router,
-      onClick: () => {
-        window.open('/admin-automation', '_blank');
-      },
+      onClick: () => navigate('/admin-automation'),
       bgColor: "bg-[#F2FCE2]"
     },
     {
       title: "Análisis predictivo de precios",
       description: "Previsión de tendencias del mercado inmobiliario",
       icon: LineChart,
-      onClick: () => {
-        window.open('/price-prediction', '_blank');
-      },
+      onClick: () => navigate('/price-prediction'),
       bgColor: "bg-[#F2FCE2]"
     },
     {
       title: "Análisis de Mercado y Tendencias",
       description: "Analiza las tendencias y métricas clave del mercado",
       icon: TrendingUp,
-      onClick: () => {
-        window.open('/market-analysis', '_blank');
-      },
+      onClick: () => navigate('/market-analysis'),
       bgColor: "bg-[#D6BCFA]"
     },
     {
       title: "Análisis de Sentimiento y Opiniones",
       description: "Analiza comentarios y reseñas de clientes para mejorar el servicio",
       icon: MessageSquare,
-      onClick: () => {
-        window.open('/sentiment-analysis', '_blank');
-      },
+      onClick: () => navigate('/sentiment-analysis'),
       bgColor: "bg-[#F2FCE2]"
     },
     {
       title: "Usuarios",
       description: "Administra los usuarios",
       icon: Users,
-      onClick: () => {
-        window.open('/users-management', '_blank');
-      },
+      onClick: () => navigate('/users-management'),
       bgColor: "bg-[#D3E4FD]"
     },
     {
       title: "Estadísticas",
       description: "Ver análisis y reportes",
       icon: LineChart,
-      onClick: () => {
-        window.open('/statistics', '_blank');
-      },
+      onClick: () => navigate('/statistics'),
       bgColor: "bg-[#F2FCE2]"
     },
   ];
@@ -130,7 +116,7 @@ const Dashboard = () => {
                   variant="outline"
                   onClick={item.onClick}
                 >
-                  Abrir en nueva ventana
+                  Ver sección
                 </Button>
               </CardContent>
             </Card>
