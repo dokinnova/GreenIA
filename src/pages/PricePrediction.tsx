@@ -161,3 +161,98 @@ const PricePrediction = () => {
         {/* Main Content */}
         {isLoadingTrends ? (
           <Card className="p-8">
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          </Card>
+        ) : !selectedLocation ? (
+          <Card className="p-8">
+            <div className="text-center text-gray-500">
+              <Search className="h-12 w-12 mx-auto mb-4" />
+              <p>Selecciona una ubicación para ver el análisis de precios</p>
+            </div>
+          </Card>
+        ) : (
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+            {/* Trend Summary Card */}
+            <Card className="p-6 lg:col-span-1">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Resumen de Tendencias
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm text-gray-600">Variación Anual</span>
+                  <span className={`font-semibold ${isPositiveTrend ? 'text-green-600' : 'text-red-600'}`}>
+                    {isPositiveTrend ? '+' : ''}{trends[0]?.price_change_percentage.toFixed(2)}%
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm text-gray-600">Precio Medio Actual</span>
+                  <span className="font-semibold">
+                    {trends[0]?.average_price.toFixed(2)}€/m²
+                  </span>
+                </div>
+                {/* Market Status Indicator */}
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    {isPositiveTrend ? (
+                      <TrendingUp className="h-5 w-5 text-green-600" />
+                    ) : (
+                      <TrendingDown className="h-5 w-5 text-red-600" />
+                    )}
+                    <span className="font-medium">
+                      {isPositiveTrend ? 'Mercado en Crecimiento' : 'Mercado en Descenso'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {isPositiveTrend
+                      ? 'Los precios muestran una tendencia alcista. Considera invertir pronto.'
+                      : 'Los precios están bajando. Podría ser un buen momento para comprar.'}
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Price Chart Card */}
+            <Card className="p-6 lg:col-span-2">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <ChartLine className="h-5 w-5" />
+                Evolución de Precios
+              </h3>
+              <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
+                    <XAxis 
+                      dataKey="date" 
+                      className="text-xs"
+                      tick={{ fill: '#666' }}
+                    />
+                    <YAxis 
+                      className="text-xs"
+                      tick={{ fill: '#666' }}
+                      tickFormatter={(value) => `${value}€`}
+                    />
+                    <ChartTooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="precio_medio"
+                      stroke="#2563eb"
+                      strokeWidth={2}
+                      dot={{ fill: '#2563eb', r: 4 }}
+                      activeDot={{ r: 6 }}
+                      name="Precio medio"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PricePrediction;
