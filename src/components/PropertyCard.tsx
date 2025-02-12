@@ -46,8 +46,8 @@ const PropertyCard = ({
     return ['/placeholder.svg'];
   }, [image_urls, image_url]);
 
-  // Valor temporal para la valoración (1-6)
-  const rating = Math.floor(Math.random() * 6) + 1;
+  // Valor temporal para la valoración (1-5)
+  const rating = Math.floor(Math.random() * 5) + 1;
 
   // Función para obtener el color basado en la valoración
   const getRatingColor = (rating: number) => {
@@ -59,10 +59,8 @@ const PropertyCard = ({
       case 3:
         return 'bg-[#FEF7CD]'; // Amarillo claro
       case 4:
-        return 'bg-[#A3E635]'; // Verde lima
-      case 5:
         return 'bg-[#4ADE80]'; // Verde medio
-      case 6:
+      case 5:
         return 'bg-[#0EA5E9]'; // Verde azulado
       default:
         return 'bg-gray-500';
@@ -70,7 +68,7 @@ const PropertyCard = ({
   };
 
   // Calcula el porcentaje para la barra de progreso
-  const ratingPercentage = (rating / 6) * 100;
+  const ratingPercentage = (rating / 5) * 100;
 
   return (
     <Card className={`w-full overflow-hidden transition-all duration-300 ${
@@ -122,7 +120,7 @@ const PropertyCard = ({
         <div className="mt-3">
           <div className="flex justify-between text-sm mb-1">
             <span className="text-gray-600">Valoración</span>
-            <span className="font-semibold">{rating}/6</span>
+            <span className="font-semibold">{rating}/5</span>
           </div>
           <Progress 
             value={ratingPercentage} 
