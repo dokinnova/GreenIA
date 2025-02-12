@@ -5,14 +5,31 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ChartBar, PieChart, LineChart } from 'lucide-react';
 import { ChartContainer, ChartLegend } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-
-const mockData = [
-  { name: 'Positivo', value: 65, color: '#22c55e' },
-  { name: 'Neutro', value: 25, color: '#94a3b8' },
-  { name: 'Negativo', value: 10, color: '#ef4444' },
-];
+import { useQuery } from '@tanstack/react-query';
+import { getCommentStats } from '@/data/comments/queries';
 
 export const DataVisualization = () => {
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['commentStats'],
+    queryFn: getCommentStats,
+  });
+
+  const chartData = stats ? [
+    { name: 'Positivo', value: stats.positive, color: '#22c55e' },
+    { name: 'Neutro', value: stats.neutral, color: '#94a3b8' },
+    { name: 'Negativo', value: stats.negative, color: '#ef4444' },
+  ] : [];
+
+  if (isLoading) {
+    return (
+      <Card className="mb-6">
+        <CardContent className="p-8 flex justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -37,12 +54,12 @@ export const DataVisualization = () => {
 
           <TabsContent value="bar" className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockData}>
+              <BarChart data={chartData}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="value">
-                  {mockData.map((entry, index) => (
+                  {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Bar>
@@ -50,7 +67,6 @@ export const DataVisualization = () => {
             </ResponsiveContainer>
           </TabsContent>
 
-          {/* Otros tipos de gráficos se implementarán aquí */}
           <TabsContent value="pie">
             <div className="h-[300px] flex items-center justify-center">
               Gráfico circular (próximamente)

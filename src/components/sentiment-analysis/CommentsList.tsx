@@ -12,31 +12,12 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchComments, updateCommentStatus } from '@/data/comments/queries';
+import type { Comment } from '@/data/comments/types';
+import { toast } from 'sonner';
 
-const mockComments = [
-  {
-    id: 1,
-    clientName: 'María García',
-    comment: 'Excelente atención y el piso estaba en perfectas condiciones.',
-    sentiment: 'positive',
-    source: 'google',
-    date: '2024-03-15',
-    isReviewed: true,
-    isPriority: false,
-  },
-  {
-    id: 2,
-    clientName: 'Juan Pérez',
-    comment: 'La ubicación es buena pero el precio es algo elevado.',
-    sentiment: 'neutral',
-    source: 'internal_form',
-    date: '2024-03-14',
-    isReviewed: false,
-    isPriority: true,
-  },
-];
-
-const getSentimentIcon = (sentiment: string) => {
+const getSentimentIcon = (sentiment: Comment['sentiment']) => {
   switch (sentiment) {
     case 'positive':
       return <ThumbsUp className="h-4 w-4 text-green-500" />;
@@ -47,7 +28,7 @@ const getSentimentIcon = (sentiment: string) => {
   }
 };
 
-const getSourceBadge = (source: string) => {
+const getSourceBadge = (source: Comment['source']) => {
   switch (source) {
     case 'google':
       return <Badge variant="secondary">Google</Badge>;
@@ -61,6 +42,43 @@ const getSourceBadge = (source: string) => {
 };
 
 export const CommentsList = () => {
+  const queryClient = useQueryClient();
+
+  const { data: comments = [], isLoading } = useQuery({
+    queryKey: ['comments'],
+    queryFn: () => fetchComments(),
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ commentId, updates }: { commentId: number, updates: { is_reviewed?: boolean, is_priority?: boolean } }) =>
+      updateCommentStatus(commentId, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      toast.success('Estado del comentario actualizado');
+    },
+    onError: (error) => {
+      toast.error('Error al actualizar el estado del comentario');
+      console.error('Error:', error);
+    },
+  });
+
+  const handleTogglePriority = (commentId: number, currentPriority: boolean) => {
+    updateStatusMutation.mutate({
+      commentId,
+      updates: { is_priority: !currentPriority }
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-8 flex justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -71,7 +89,7 @@ export const CommentsList = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {mockComments.map((comment) => (
+          {comments.map((comment) => (
             <div
               key={comment.id}
               className="border rounded-lg p-4 space-y-2"
@@ -80,30 +98,43 @@ export const CommentsList = () => {
                 <div className="flex items-start gap-2">
                   {getSentimentIcon(comment.sentiment)}
                   <div>
-                    <div className="font-medium">{comment.clientName}</div>
+                    <div className="font-medium">{comment.client_name}</div>
                     <div className="text-sm text-muted-foreground">
-                      {comment.date}
+                      {new Date(comment.created_at).toLocaleDateString()}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {getSourceBadge(comment.source)}
-                  {comment.isPriority && (
-                    <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8"
+                    onClick={() => handleTogglePriority(comment.id, comment.is_priority || false)}
+                  >
+                    <Star className={`h-4 w-4 ${comment.is_priority ? 'text-yellow-500 fill-yellow-500' : 'text-gray-400'}`} />
+                  </Button>
                 </div>
               </div>
               
-              <p className="text-sm">{comment.comment}</p>
+              <p className="text-sm">{comment.comment_text}</p>
               
               <div className="flex items-center gap-2 pt-2">
                 <Button variant="outline" size="sm" className="h-8">
                   <Reply className="h-4 w-4 mr-1" />
                   Responder
                 </Button>
-                <Button variant="outline" size="sm" className="h-8">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8"
+                  onClick={() => updateStatusMutation.mutate({
+                    commentId: comment.id,
+                    updates: { is_reviewed: true }
+                  })}
+                >
                   <Flag className="h-4 w-4 mr-1" />
-                  Marcar
+                  Marcar como revisado
                 </Button>
               </div>
             </div>
