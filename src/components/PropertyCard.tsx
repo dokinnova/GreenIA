@@ -3,6 +3,12 @@ import React from 'react';
 import { Card } from './ui/card';
 import { Trees } from 'lucide-react';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -33,6 +39,8 @@ const PropertyCard = ({
   isHighlighted = false,
   onClick 
 }: PropertyCardProps) => {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
   const images = React.useMemo(() => {
     if (image_urls && image_urls.length > 0) {
       return image_urls;
@@ -89,56 +97,119 @@ const PropertyCard = ({
   };
 
   return (
-    <Card 
-      className={`w-full overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg ${
-        isHighlighted ? 'ring-2 ring-primary scale-105' : ''
-      }`}
-      onClick={onClick}
-    >
-      <div className="relative w-full aspect-[16/9]">
-        <Carousel className="w-full">
-          <CarouselContent>
-            {images.map((img, index) => (
-              <CarouselItem key={index} className="relative w-full aspect-[16/9]">
-                <img 
-                  src={img} 
-                  alt={`${title} - imagen ${index + 1}`} 
-                  className="absolute inset-0 w-full h-full object-cover"
-                  onError={(e) => {
-                    console.error('Error loading image:', img);
-                    e.currentTarget.src = '/placeholder.svg';
-                  }}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {images.length > 1 && (
-            <>
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
-            </>
-          )}
-        </Carousel>
-      </div>
-
-      <div className="p-2 md:p-3">
-        <h3 className="font-heading font-semibold text-sm md:text-base mb-1 line-clamp-1">{title}</h3>
-        <p className="text-lg md:text-xl font-bold text-primary mb-1">€{price.toLocaleString()}</p>
-        <p className="text-gray-600 mb-1 text-xs md:text-sm line-clamp-1">{location}</p>
-        <div className="flex flex-wrap gap-2 text-xs text-gray-500 mb-2">
-          <span>{bedrooms} hab.</span>
-          <span>{bathrooms} baños</span>
-          <span>{size} m²</span>
-          {has_garden && (
-            <span className="flex items-center gap-1">
-              <Trees className="h-3 w-3" />
-              Jardín
-            </span>
-          )}
+    <>
+      <Card 
+        className={`w-full overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg ${
+          isHighlighted ? 'ring-2 ring-primary scale-105' : ''
+        }`}
+        onClick={() => setIsDialogOpen(true)}
+      >
+        <div className="relative w-full aspect-[16/9]">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {images.map((img, index) => (
+                <CarouselItem key={index} className="relative w-full aspect-[16/9]">
+                  <img 
+                    src={img} 
+                    alt={`${title} - imagen ${index + 1}`} 
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error('Error loading image:', img);
+                      e.currentTarget.src = '/placeholder.svg';
+                    }}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {images.length > 1 && (
+              <>
+                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
+                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
+              </>
+            )}
+          </Carousel>
         </div>
-        {renderRatings()}
-      </div>
-    </Card>
+
+        <div className="p-2 md:p-3">
+          <h3 className="font-heading font-semibold text-sm md:text-base mb-1 line-clamp-1">{title}</h3>
+          <p className="text-lg md:text-xl font-bold text-primary mb-1">€{price.toLocaleString()}</p>
+          <p className="text-gray-600 mb-1 text-xs md:text-sm line-clamp-1">{location}</p>
+          <div className="flex flex-wrap gap-2 text-xs text-gray-500 mb-2">
+            <span>{bedrooms} hab.</span>
+            <span>{bathrooms} baños</span>
+            <span>{size} m²</span>
+            {has_garden && (
+              <span className="flex items-center gap-1">
+                <Trees className="h-3 w-3" />
+                Jardín
+              </span>
+            )}
+          </div>
+          {renderRatings()}
+        </div>
+      </Card>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <Carousel className="w-full">
+              <CarouselContent>
+                {images.map((img, index) => (
+                  <CarouselItem key={index}>
+                    <div className="aspect-[16/9] relative">
+                      <img 
+                        src={img} 
+                        alt={`${title} - imagen ${index + 1}`} 
+                        className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {images.length > 1 && (
+                <>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </>
+              )}
+            </Carousel>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Detalles</h3>
+                <div className="space-y-2">
+                  <p className="text-2xl font-bold text-primary">€{price.toLocaleString()}</p>
+                  <p className="text-gray-600">{location}</p>
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                    <span>{bedrooms} habitaciones</span>
+                    <span>{bathrooms} baños</span>
+                    <span>{size} m²</span>
+                    {has_garden && (
+                      <span className="flex items-center gap-1">
+                        <Trees className="h-4 w-4" />
+                        Jardín
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Valoraciones</h3>
+                {renderRatings()}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
