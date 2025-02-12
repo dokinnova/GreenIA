@@ -467,18 +467,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_price_trends: {
-        Args: {
-          location_param: string
-          start_date: string
-          end_date: string
-        }
-        Returns: {
-          average_price: number
-          price_change_percentage: number
-          date_group: string
-        }[]
-      }
+      get_price_trends:
+        | {
+            Args: {
+              location_param: string
+              start_date: string
+              end_date: string
+            }
+            Returns: {
+              average_price: number
+              price_change_percentage: number
+              date_group: string
+            }[]
+          }
+        | {
+            Args: {
+              location_param: string
+              start_date: string
+              end_date: string
+            }
+            Returns: {
+              average_price: number
+              price_change_percentage: number
+              date_group: string
+            }[]
+          }
     }
     Enums: {
       comment_source: "google" | "social_media" | "internal_form"
