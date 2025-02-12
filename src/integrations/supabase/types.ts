@@ -98,6 +98,7 @@ export type Database = {
           is_priority: boolean | null
           is_reviewed: boolean | null
           keywords: string[] | null
+          location: string | null
           property_id: number | null
           sentiment: Database["public"]["Enums"]["sentiment_type"]
           source: Database["public"]["Enums"]["comment_source"]
@@ -111,6 +112,7 @@ export type Database = {
           is_priority?: boolean | null
           is_reviewed?: boolean | null
           keywords?: string[] | null
+          location?: string | null
           property_id?: number | null
           sentiment: Database["public"]["Enums"]["sentiment_type"]
           source: Database["public"]["Enums"]["comment_source"]
@@ -124,6 +126,7 @@ export type Database = {
           is_priority?: boolean | null
           is_reviewed?: boolean | null
           keywords?: string[] | null
+          location?: string | null
           property_id?: number | null
           sentiment?: Database["public"]["Enums"]["sentiment_type"]
           source?: Database["public"]["Enums"]["comment_source"]
