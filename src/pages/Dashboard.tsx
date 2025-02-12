@@ -10,11 +10,6 @@ import {
   ArrowLeft,
   MessageSquare,
   TrendingUp,
-  FileText,
-  Calendar,
-  GitCommit,
-  Cog,
-  Bot,
   Router
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -39,29 +34,7 @@ const Dashboard = () => {
       onClick: () => {
         window.open('/admin-automation', '_blank');
       },
-      bgColor: "bg-[#F2FCE2]",
-      features: [
-        {
-          icon: FileText,
-          label: "Gestión de Documentos"
-        },
-        {
-          icon: Calendar,
-          label: "Programación de Visitas"
-        },
-        {
-          icon: GitCommit,
-          label: "Seguimiento de Transacciones"
-        },
-        {
-          icon: Bot,
-          label: "Automatización de Tareas"
-        },
-        {
-          icon: Cog,
-          label: "Configuración"
-        }
-      ]
+      bgColor: "bg-[#F2FCE2]"
     },
     {
       title: "Análisis predictivo de precios",
@@ -139,9 +112,7 @@ const Dashboard = () => {
           {dashboardItems.map((item) => (
             <Card 
               key={item.title}
-              className={`hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden ${
-                item.title === "Automatización de Procesos Administrativos" ? "md:col-span-2 lg:col-span-3" : ""
-              }`}
+              className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
               onClick={item.onClick}
             >
               <CardHeader className="flex flex-row items-center gap-4 relative">
@@ -154,19 +125,6 @@ const Dashboard = () => {
                 </div>
               </CardHeader>
               <CardContent className="relative">
-                {item.features ? (
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
-                    {item.features.map((feature, index) => (
-                      <div 
-                        key={index}
-                        className="flex flex-col items-center gap-2 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                      >
-                        <feature.icon className="h-5 w-5 text-[#9b87f5]" />
-                        <span className="text-xs text-gray-600 text-center">{feature.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
                 <Button 
                   className="w-full bg-white hover:bg-gray-50 text-[#1A1F2C] border-[#9b87f5] hover:border-[#D6BCFA] transition-colors"
                   variant="outline"
