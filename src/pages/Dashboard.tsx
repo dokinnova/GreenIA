@@ -7,7 +7,8 @@ import {
   Users, 
   Building, 
   LineChart,
-  ArrowLeft
+  ArrowLeft,
+  MessageSquare
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,6 +30,14 @@ const Dashboard = () => {
       icon: LineChart,
       onClick: () => {
         window.open('/price-prediction', '_blank');
+      }
+    },
+    {
+      title: "Análisis de Sentimiento y Opiniones",
+      description: "Analiza comentarios y reseñas de clientes para mejorar el servicio",
+      icon: MessageSquare,
+      onClick: () => {
+        window.open('/sentiment-analysis', '_blank');
       }
     },
     {
