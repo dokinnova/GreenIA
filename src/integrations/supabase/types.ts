@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      automated_tasks: {
+        Row: {
+          actions: Json
+          created_at: string
+          enabled: boolean | null
+          id: string
+          last_run: string | null
+          name: string
+          schedule: string | null
+          status: string
+          triggers: Json
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          actions: Json
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          last_run?: string | null
+          name: string
+          schedule?: string | null
+          status: string
+          triggers: Json
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          actions?: Json
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          last_run?: string | null
+          name?: string
+          schedule?: string | null
+          status?: string
+          triggers?: Json
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       comment_responses: {
         Row: {
           comment_id: number | null
@@ -40,6 +82,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      documents: {
+        Row: {
+          created_at: string
+          file_path: string
+          id: string
+          metadata: Json | null
+          owner_id: string
+          status: string
+          tags: string[] | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          id?: string
+          metadata?: Json | null
+          owner_id: string
+          status: string
+          tags?: string[] | null
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          id?: string
+          metadata?: Json | null
+          owner_id?: string
+          status?: string
+          tags?: string[] | null
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       market_metrics: {
         Row: {
@@ -122,6 +203,36 @@ export type Database = {
           property_type?: string
           scenario_type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -269,6 +380,87 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      transactions: {
+        Row: {
+          agent_id: string
+          amount: number
+          client_id: string
+          created_at: string
+          due_date: string | null
+          id: string
+          metadata: Json | null
+          property_id: string
+          stage: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          amount: number
+          client_id: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id: string
+          stage: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          amount?: number
+          client_id?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id?: string
+          stage?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      visits: {
+        Row: {
+          agent_id: string
+          client_name: string
+          created_at: string
+          id: string
+          notes: string | null
+          property_id: string
+          reminder_sent: boolean | null
+          status: string
+          updated_at: string
+          visit_date: string
+        }
+        Insert: {
+          agent_id: string
+          client_name: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          property_id: string
+          reminder_sent?: boolean | null
+          status: string
+          updated_at?: string
+          visit_date: string
+        }
+        Update: {
+          agent_id?: string
+          client_name?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          property_id?: string
+          reminder_sent?: boolean | null
+          status?: string
+          updated_at?: string
+          visit_date?: string
+        }
+        Relationships: []
       }
     }
     Views: {
