@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import type { Property } from "./types";
 
@@ -31,7 +30,6 @@ export const createProperty = async (property: Omit<Property, 'id' | 'created_at
   return data;
 };
 
-// Add new properties
 export const addInitialProperties = async () => {
   const newProperties = [
     {
@@ -42,7 +40,9 @@ export const addInitialProperties = async () => {
       bathrooms: 3,
       size: 350,
       has_garden: true,
-      rating: 4.8,
+      price_rating: 2,
+      quality_rating: 5,
+      location_rating: 5,
       image_urls: [
         "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800",
         "https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800",
@@ -58,7 +58,9 @@ export const addInitialProperties = async () => {
       bathrooms: 2,
       size: 120,
       has_garden: false,
-      rating: 4.5,
+      price_rating: 3,
+      quality_rating: 4,
+      location_rating: 5,
       image_urls: [
         "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
         "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800",
@@ -74,7 +76,9 @@ export const addInitialProperties = async () => {
       bathrooms: 2,
       size: 180,
       has_garden: true,
-      rating: 4.2,
+      price_rating: 4,
+      quality_rating: 3,
+      location_rating: 4,
       image_urls: [
         "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800",
         "https://images.unsplash.com/photo-1564013799932-ab600027ffc7?w=800",
@@ -90,7 +94,9 @@ export const addInitialProperties = async () => {
       bathrooms: 1,
       size: 95,
       has_garden: false,
-      rating: 4.6,
+      price_rating: 4,
+      quality_rating: 4,
+      location_rating: 5,
       image_urls: [
         "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
         "https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=800",
@@ -106,7 +112,9 @@ export const addInitialProperties = async () => {
       bathrooms: 3,
       size: 280,
       has_garden: true,
-      rating: 4.7,
+      price_rating: 3,
+      quality_rating: 5,
+      location_rating: 5,
       image_urls: [
         "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800",
         "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f84?w=800",
@@ -122,7 +130,9 @@ export const addInitialProperties = async () => {
       bathrooms: 2,
       size: 110,
       has_garden: false,
-      rating: 4.4,
+      price_rating: 3,
+      quality_rating: 4,
+      location_rating: 5,
       image_urls: [
         "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800",
         "https://images.unsplash.com/photo-1512917774080-9991f1c4c751?w=800",

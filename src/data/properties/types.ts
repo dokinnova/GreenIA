@@ -14,6 +14,9 @@ export interface Property {
   created_at: string;
   updated_at: string;
   rating?: number;
+  price_rating?: number;
+  quality_rating?: number;
+  location_rating?: number;
 }
 
 export interface PropertyFilters {

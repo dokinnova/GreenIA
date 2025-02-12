@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card } from './ui/card';
-import { Trees, Star } from 'lucide-react';
+import { Trees } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -27,7 +27,9 @@ const PropertyCard = ({
   image_url,
   image_urls = [],
   has_garden,
-  rating = 0,
+  price_rating = 3,
+  quality_rating = 3,
+  location_rating = 3,
   isHighlighted = false,
   onClick 
 }: PropertyCardProps) => {
@@ -41,28 +43,46 @@ const PropertyCard = ({
     return ['/placeholder.svg'];
   }, [image_urls, image_url]);
 
-  const renderRating = () => {
-    const ratingValue = rating || 0;
+  const getRatingColor = (rating: number) => {
+    switch(rating) {
+      case 1: return 'bg-red-500';
+      case 2: return 'bg-orange-500';
+      case 3: return 'bg-yellow-500';
+      case 4: return 'bg-lime-500';
+      case 5: return 'bg-green-500';
+      default: return 'bg-gray-300';
+    }
+  };
+
+  const renderRatings = () => {
     return (
-      <div className="flex flex-col gap-1 mt-2">
-        <div className="flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star
-              key={star}
-              className={`h-4 w-4 ${
-                star <= ratingValue
-                  ? 'fill-yellow-400 text-yellow-400'
-                  : 'fill-gray-200 text-gray-200'
-              }`}
+      <div className="flex flex-col gap-2 mt-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500 w-16">Precio</span>
+          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div 
+              className={`h-full rounded-full transition-all duration-300 ${getRatingColor(price_rating)}`}
+              style={{ width: `${(price_rating / 5) * 100}%` }}
             />
-          ))}
-          <span className="text-sm text-gray-600 ml-1">{ratingValue.toFixed(1)}</span>
+          </div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-1.5">
-          <div 
-            className="bg-yellow-400 h-1.5 rounded-full transition-all duration-300"
-            style={{ width: `${(ratingValue / 5) * 100}%` }}
-          />
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500 w-16">Calidad</span>
+          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div 
+              className={`h-full rounded-full transition-all duration-300 ${getRatingColor(quality_rating)}`}
+              style={{ width: `${(quality_rating / 5) * 100}%` }}
+            />
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500 w-16">Ubicación</span>
+          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div 
+              className={`h-full rounded-full transition-all duration-300 ${getRatingColor(location_rating)}`}
+              style={{ width: `${(location_rating / 5) * 100}%` }}
+            />
+          </div>
         </div>
       </div>
     );
@@ -116,7 +136,7 @@ const PropertyCard = ({
             </span>
           )}
         </div>
-        {renderRating()}
+        {renderRatings()}
       </div>
     </Card>
   );
