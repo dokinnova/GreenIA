@@ -68,7 +68,20 @@ const PropertyCard = ({
     }
   };
 
-  const ratingPercentage = (rating / 5) * 100;
+  const renderRatingBars = () => {
+    return (
+      <div className="flex w-full h-2 bg-white border border-gray-200 rounded-full overflow-hidden">
+        {[1, 2, 3, 4, 5].map((value) => (
+          <div
+            key={value}
+            className={`flex-1 ${value <= rating ? getRatingColor(rating) : 'bg-white'} ${
+              value > 1 ? 'border-l border-white' : ''
+            }`}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <Card className={`w-full overflow-hidden transition-all duration-300 ${
@@ -121,24 +134,11 @@ const PropertyCard = ({
             <span className="text-gray-600">Valoración</span>
             <span className="font-semibold">{rating}/5</span>
           </div>
-          <div className="relative">
-            <div className="absolute inset-0 flex justify-between pointer-events-none px-[1px]">
-              {[1, 2, 3, 4].map((level) => (
-                <div 
-                  key={level}
-                  className="w-[2px] h-2 bg-white/80 z-10"
-                />
-              ))}
-            </div>
-            <Progress 
-              value={ratingPercentage} 
-              className={`h-2 bg-gray-100 ${getRatingColor(rating)}`}
-            />
-            <div className="flex justify-between text-[9px] text-gray-500 mt-0.5 px-[1px]">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <span key={level}>{level}</span>
-              ))}
-            </div>
+          {renderRatingBars()}
+          <div className="flex justify-between text-[9px] text-gray-500 mt-0.5">
+            {[1, 2, 3, 4, 5].map((level) => (
+              <span key={level}>{level}</span>
+            ))}
           </div>
         </div>
       </div>
