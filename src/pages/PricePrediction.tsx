@@ -2,32 +2,14 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getPriceTrends, getLocations } from '@/data/price-prediction/queries';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { 
-  ArrowLeft, 
-  TrendingUp, 
-  TrendingDown, 
-  Calendar,
-  Home,
-  Search,
-  Filter,
-  DollarSign,
-  ChartLine,
-  Info
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import { Line, LineChart, XAxis, YAxis, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { Search } from 'lucide-react';
 import { format, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Header } from '@/components/price-prediction/Header';
+import { Filters } from '@/components/price-prediction/Filters';
+import { TrendSummary } from '@/components/price-prediction/TrendSummary';
+import { PriceChart } from '@/components/price-prediction/PriceChart';
 
 const propertyTypes = [
   "Todos",
@@ -39,7 +21,6 @@ const propertyTypes = [
 ];
 
 const PricePrediction = () => {
-  const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedPropertyType, setSelectedPropertyType] = useState<string>('Todos');
   const endDate = new Date();
@@ -67,96 +48,16 @@ const PricePrediction = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="container mx-auto py-8 px-4">
-        {/* Header Section */}
-        <div className="flex items-start gap-4 mb-8">
-          <Button 
-            variant="outline" 
-            size="icon"
-            onClick={() => navigate('/dashboard')}
-            className="mt-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold text-gray-900 font-heading">
-              Análisis Predictivo de Precios del Mercado
-            </h1>
-            <p className="text-lg text-gray-600 mt-2">
-              Visualiza tendencias futuras y toma decisiones informadas
-            </p>
-          </div>
-        </div>
+        <Header />
 
-        {/* Filters Section */}
-        <Card className="p-6 mb-8 border-none shadow-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                <Search className="h-4 w-4" />
-                Ubicación
-              </label>
-              <Select
-                value={selectedLocation}
-                onValueChange={setSelectedLocation}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecciona ubicación" />
-                </SelectTrigger>
-                <SelectContent>
-                  {locations.map((location) => (
-                    <SelectItem key={location} value={location}>
-                      {location}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                <Home className="h-4 w-4" />
-                Tipo de Propiedad
-              </label>
-              <Select
-                value={selectedPropertyType}
-                onValueChange={setSelectedPropertyType}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecciona tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {propertyTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Período
-              </label>
-              <Select value="12" disabled>
-                <SelectTrigger className="w-full">
-                  <SelectValue>Últimos 12 meses</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="12">Últimos 12 meses</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-end">
-              <Button className="w-full" disabled={!selectedLocation}>
-                <Filter className="h-4 w-4 mr-2" />
-                Actualizar Análisis
-              </Button>
-            </div>
-          </div>
-        </Card>
+        <Filters 
+          selectedLocation={selectedLocation}
+          selectedPropertyType={selectedPropertyType}
+          locations={locations}
+          propertyTypes={propertyTypes}
+          onLocationChange={setSelectedLocation}
+          onPropertyTypeChange={setSelectedPropertyType}
+        />
 
         {/* Main Content */}
         {isLoadingTrends ? (
@@ -174,80 +75,8 @@ const PricePrediction = () => {
           </Card>
         ) : (
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-            {/* Trend Summary Card */}
-            <Card className="p-6 lg:col-span-1">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Resumen de Tendencias
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm text-gray-600">Variación Anual</span>
-                  <span className={`font-semibold ${isPositiveTrend ? 'text-green-600' : 'text-red-600'}`}>
-                    {isPositiveTrend ? '+' : ''}{trends[0]?.price_change_percentage.toFixed(2)}%
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm text-gray-600">Precio Medio Actual</span>
-                  <span className="font-semibold">
-                    {trends[0]?.average_price.toFixed(2)}€/m²
-                  </span>
-                </div>
-                {/* Market Status Indicator */}
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    {isPositiveTrend ? (
-                      <TrendingUp className="h-5 w-5 text-green-600" />
-                    ) : (
-                      <TrendingDown className="h-5 w-5 text-red-600" />
-                    )}
-                    <span className="font-medium">
-                      {isPositiveTrend ? 'Mercado en Crecimiento' : 'Mercado en Descenso'}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    {isPositiveTrend
-                      ? 'Los precios muestran una tendencia alcista. Considera invertir pronto.'
-                      : 'Los precios están bajando. Podría ser un buen momento para comprar.'}
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Price Chart Card */}
-            <Card className="p-6 lg:col-span-2">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <ChartLine className="h-5 w-5" />
-                Evolución de Precios
-              </h3>
-              <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-                    <XAxis 
-                      dataKey="date" 
-                      className="text-xs"
-                      tick={{ fill: '#666' }}
-                    />
-                    <YAxis 
-                      className="text-xs"
-                      tick={{ fill: '#666' }}
-                      tickFormatter={(value) => `${value}€`}
-                    />
-                    <ChartTooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="precio_medio"
-                      stroke="#2563eb"
-                      strokeWidth={2}
-                      dot={{ fill: '#2563eb', r: 4 }}
-                      activeDot={{ r: 6 }}
-                      name="Precio medio"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
+            <TrendSummary trend={trends[0]} isPositiveTrend={isPositiveTrend} />
+            <PriceChart data={chartData} />
           </div>
         )}
       </div>
