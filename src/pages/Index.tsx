@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
@@ -171,7 +172,7 @@ const Index = () => {
             className="h-8 md:h-12 mx-auto mb-4 md:mb-8"
           />
           <h1 className="font-heading text-3xl md:text-5xl font-bold mb-4 md:mb-6">
-            Encuentra tu hogar ideal
+            Encuentra el hogar ideal para tu cliente
           </h1>
           <p className="text-lg md:text-xl mb-6 md:mb-8">
             Miles de propiedades te están esperando
