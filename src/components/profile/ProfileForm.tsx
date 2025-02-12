@@ -17,7 +17,7 @@ import {
 interface ProfileFormValues {
   full_name: string;
   phone_number: string;
-  email: string;  // Ya no es opcional
+  email: string;
 }
 
 interface ProfileFormProps {
@@ -74,7 +74,11 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
             <FormItem>
               <FormLabel>Correo electrónico</FormLabel>
               <FormControl>
-                <Input {...field} disabled className="bg-gray-50" />
+                <Input 
+                  {...field} 
+                  disabled 
+                  className="bg-gray-100 text-gray-900 font-medium" 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
