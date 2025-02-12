@@ -20,6 +20,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface MenuItem {
   label: string;
@@ -71,11 +73,19 @@ const menuItems: MenuItem[] = [
 ];
 
 const AdminSidebar = ({ activeSection, onSectionChange }: AdminSidebarProps) => {
+  const navigate = useNavigate();
+
   return (
     <SidebarComponent>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menú Principal</SidebarGroupLabel>
+          <Button 
+            variant="ghost" 
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 mb-2"
+            onClick={() => navigate('/dashboard')}
+          >
+            Menú Principal
+          </Button>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
