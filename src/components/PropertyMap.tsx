@@ -33,12 +33,11 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
         ref={mapRef}
         className="z-0"
         style={{ height: '100%', width: '100%' }}
-        defaultZoom={6}
+        zoom={6}
         center={defaultPosition}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
         {properties.map((property) => {
