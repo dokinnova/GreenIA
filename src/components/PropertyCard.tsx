@@ -20,8 +20,10 @@ interface PropertyCardProps {
   size: number;
   image_url: string | null;
   image_urls?: string[] | null;
+  keywords: string[];
   has_garden: boolean;
   isHighlighted?: boolean;
+  showActions?: boolean;
 }
 
 const PropertyCard = ({ 

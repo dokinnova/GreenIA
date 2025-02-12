@@ -13,7 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Plus, ArrowLeft } from 'lucide-react';
-import { PropertyCard } from '@/components/PropertyCard';
+import PropertyCard from '@/components/PropertyCard';
 import { useNavigate } from 'react-router-dom';
 
 const PropertiesManagement = () => {
@@ -77,7 +77,7 @@ const PropertiesManagement = () => {
             {properties.map((property) => (
               <PropertyCard 
                 key={property.id} 
-                property={property}
+                {...property}
                 showActions={true}
               />
             ))}
