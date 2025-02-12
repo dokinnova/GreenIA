@@ -41,6 +41,90 @@ export type Database = {
           },
         ]
       }
+      market_metrics: {
+        Row: {
+          absorption_rate: number
+          average_price: number
+          created_at: string
+          date: string
+          days_on_market: number
+          demand_index: number
+          id: number
+          location: string
+          property_type: string
+          search_volume: number
+          transactions_volume: number
+          updated_at: string
+        }
+        Insert: {
+          absorption_rate: number
+          average_price: number
+          created_at?: string
+          date: string
+          days_on_market: number
+          demand_index: number
+          id?: number
+          location: string
+          property_type: string
+          search_volume: number
+          transactions_volume: number
+          updated_at?: string
+        }
+        Update: {
+          absorption_rate?: number
+          average_price?: number
+          created_at?: string
+          date?: string
+          days_on_market?: number
+          demand_index?: number
+          id?: number
+          location?: string
+          property_type?: string
+          search_volume?: number
+          transactions_volume?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      market_predictions: {
+        Row: {
+          confidence_level: number
+          created_at: string
+          factors: Json | null
+          id: number
+          location: string
+          predicted_price: number
+          prediction_date: string
+          property_type: string
+          scenario_type: string
+          updated_at: string
+        }
+        Insert: {
+          confidence_level: number
+          created_at?: string
+          factors?: Json | null
+          id?: number
+          location: string
+          predicted_price: number
+          prediction_date: string
+          property_type: string
+          scenario_type: string
+          updated_at?: string
+        }
+        Update: {
+          confidence_level?: number
+          created_at?: string
+          factors?: Json | null
+          id?: number
+          location?: string
+          predicted_price?: number
+          prediction_date?: string
+          property_type?: string
+          scenario_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       properties: {
         Row: {
           bathrooms: number

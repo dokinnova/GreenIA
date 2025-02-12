@@ -12,6 +12,7 @@ import PropertiesManagement from "./pages/PropertiesManagement";
 import Statistics from "./pages/Statistics";
 import PricePrediction from "./pages/PricePrediction";
 import SentimentAnalysis from "./pages/SentimentAnalysis";
+import MarketAnalysis from "./pages/MarketAnalysis";
 import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/price-prediction" element={<PricePrediction />} />
           <Route path="/sentiment-analysis" element={<SentimentAnalysis />} />
+          <Route path="/market-analysis" element={<MarketAnalysis />} />
         </Routes>
         <CookieConsent />
       </BrowserRouter>

@@ -8,7 +8,8 @@ import {
   Building, 
   LineChart,
   ArrowLeft,
-  MessageSquare
+  MessageSquare,
+  TrendingUp
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,6 +31,14 @@ const Dashboard = () => {
       icon: LineChart,
       onClick: () => {
         window.open('/price-prediction', '_blank');
+      }
+    },
+    {
+      title: "Análisis de Mercado y Tendencias",
+      description: "Analiza las tendencias y métricas clave del mercado",
+      icon: TrendingUp,
+      onClick: () => {
+        window.open('/market-analysis', '_blank');
       }
     },
     {
