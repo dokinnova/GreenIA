@@ -23,7 +23,8 @@ const Dashboard = () => {
       icon: Building,
       onClick: () => {
         window.open('/properties-management', '_blank');
-      }
+      },
+      gradient: "from-[#D3E4FD] to-[#9b87f5]"
     },
     {
       title: "Análisis predictivo de precios",
@@ -31,7 +32,8 @@ const Dashboard = () => {
       icon: LineChart,
       onClick: () => {
         window.open('/price-prediction', '_blank');
-      }
+      },
+      gradient: "from-[#F2FCE2] to-[#9b87f5]"
     },
     {
       title: "Análisis de Mercado y Tendencias",
@@ -39,7 +41,8 @@ const Dashboard = () => {
       icon: TrendingUp,
       onClick: () => {
         window.open('/market-analysis', '_blank');
-      }
+      },
+      gradient: "from-[#D6BCFA] to-[#9b87f5]"
     },
     {
       title: "Análisis de Sentimiento y Opiniones",
@@ -47,7 +50,8 @@ const Dashboard = () => {
       icon: MessageSquare,
       onClick: () => {
         window.open('/sentiment-analysis', '_blank');
-      }
+      },
+      gradient: "from-[#F2FCE2] to-[#D6BCFA]"
     },
     {
       title: "Usuarios",
@@ -55,7 +59,8 @@ const Dashboard = () => {
       icon: Users,
       onClick: () => {
         window.open('/users-management', '_blank');
-      }
+      },
+      gradient: "from-[#D3E4FD] to-[#D6BCFA]"
     },
     {
       title: "Estadísticas",
@@ -63,24 +68,28 @@ const Dashboard = () => {
       icon: LineChart,
       onClick: () => {
         window.open('/statistics', '_blank');
-      }
+      },
+      gradient: "from-[#F2FCE2] to-[#D3E4FD]"
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="container mx-auto py-8 px-4">
         <div className="flex items-center gap-4 mb-8">
           <Button 
             variant="outline" 
             size="icon"
             onClick={() => navigate('/')}
+            className="bg-white hover:bg-gray-50"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <LayoutDashboard className="h-8 w-8" />
+            <h1 className="text-3xl font-bold flex items-center gap-2 text-[#1A1F2C]">
+              <div className="p-2 rounded-lg bg-[#9b87f5] bg-opacity-10">
+                <LayoutDashboard className="h-8 w-8 text-[#9b87f5]" />
+              </div>
               Panel de Control
             </h1>
             <p className="text-gray-600 mt-1">
@@ -93,22 +102,23 @@ const Dashboard = () => {
           {dashboardItems.map((item) => (
             <Card 
               key={item.title}
-              className="hover:shadow-lg transition-shadow cursor-pointer"
+              className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
               onClick={item.onClick}
             >
-              <CardHeader className="flex flex-row items-center gap-4">
-                <div className="bg-primary/10 p-3 rounded-lg">
-                  <item.icon className="h-6 w-6 text-primary" />
+              <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-5`} />
+              <CardHeader className="flex flex-row items-center gap-4 relative">
+                <div className={`p-3 rounded-lg bg-gradient-to-br ${item.gradient} bg-opacity-50`}>
+                  <item.icon className="h-6 w-6 text-[#1A1F2C]" />
                 </div>
                 <div>
-                  <CardTitle>{item.title}</CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
+                  <CardTitle className="text-[#1A1F2C]">{item.title}</CardTitle>
+                  <CardDescription className="text-gray-600">{item.description}</CardDescription>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative">
                 <Button 
-                  variant="outline" 
-                  className="w-full"
+                  className="w-full bg-white hover:bg-gray-50 text-[#1A1F2C] border-[#9b87f5] hover:border-[#D6BCFA] transition-colors"
+                  variant="outline"
                   onClick={item.onClick}
                 >
                   Abrir en nueva ventana
