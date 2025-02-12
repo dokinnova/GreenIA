@@ -50,10 +50,7 @@ const AuthPage = () => {
                 loading_button_label: "Registrando...",
                 social_provider_text: "Registrarse con {{provider}}",
                 link_text: "¿Ya tienes una cuenta? Inicia sesión",
-                confirmation_text: "Revisa tu correo electrónico para confirmar tu cuenta",
-                password_too_weak: "La contraseña es demasiado débil",
-                email_taken: "Este correo electrónico ya está registrado",
-                invalid_email: "El correo electrónico no es válido"
+                confirmation_text: "Revisa tu correo electrónico para confirmar tu cuenta"
               },
               sign_in: {
                 email_label: "Correo electrónico",
@@ -63,9 +60,7 @@ const AuthPage = () => {
                 button_label: "Iniciar sesión",
                 loading_button_label: "Iniciando sesión...",
                 social_provider_text: "Iniciar sesión con {{provider}}",
-                link_text: "¿No tienes una cuenta? Regístrate",
-                password_incorrect: "Contraseña incorrecta",
-                user_not_found: "Usuario no encontrado"
+                link_text: "¿No tienes una cuenta? Regístrate"
               },
               forgotten_password: {
                 email_label: "Correo electrónico",
