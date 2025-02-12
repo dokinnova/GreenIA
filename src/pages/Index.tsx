@@ -152,10 +152,11 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div 
-        className="relative py-12 md:py-20 text-white bg-cover bg-center"
+        className="relative py-8 md:py-16 text-white bg-cover bg-center"
         style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2000")',
-          height: '400px'
+          backgroundImage: 'url("https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1800")',
+          minHeight: '300px',
+          maxHeight: '400px'
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -164,12 +165,12 @@ const Index = () => {
           <img 
             src="/logo.svg" 
             alt="GrennIA Logo" 
-            className="h-8 md:h-12 mx-auto mb-4 md:mb-8"
+            className="h-6 md:h-10 mx-auto mb-4 md:mb-6"
           />
-          <h1 className="font-heading text-3xl md:text-5xl font-bold mb-4 md:mb-6">
+          <h1 className="font-heading text-2xl md:text-4xl font-bold mb-3 md:mb-4">
             Encuentra el hogar ideal para tu cliente
           </h1>
-          <p className="text-lg md:text-xl mb-6 md:mb-8">
+          <p className="text-base md:text-lg mb-4 md:mb-6">
             La plataforma de IA que te ayuda a ofrecer la mejor vivienda
           </p>
           
