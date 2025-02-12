@@ -51,13 +51,14 @@ export const TwoFactorToggle = ({ enabled, onToggle }: TwoFactorToggleProps) => 
       </div>
       <div className="flex items-center space-x-2">
         {enabled ? (
-          <ShieldCheck className="h-4 w-4 text-green-500" />
+          <ShieldCheck className="h-4 w-4 text-emerald-600" />
         ) : (
-          <ShieldOff className="h-4 w-4 text-gray-400" />
+          <ShieldOff className="h-4 w-4 text-gray-600" />
         )}
         <Switch
           checked={enabled}
           onCheckedChange={handleTwoFactorToggle}
+          className="data-[state=checked]:bg-emerald-600 data-[state=unchecked]:bg-gray-300"
         />
       </div>
     </div>
