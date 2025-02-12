@@ -175,7 +175,7 @@ const Index = () => {
             Encuentra el hogar ideal para tu cliente
           </h1>
           <p className="text-lg md:text-xl mb-6 md:mb-8">
-            Miles de propiedades te están esperando
+            La plataforma de IA que te ayuda a ofrecer la mejor vivienda
           </p>
           
           <div className="max-w-2xl mx-auto flex gap-2 px-4">
