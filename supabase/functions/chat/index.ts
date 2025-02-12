@@ -29,20 +29,27 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
             content: `Eres un asistente inmobiliario experto que ayuda a los usuarios a encontrar propiedades en nuestra web. 
             Tu trabajo es entender las necesidades del usuario y ayudarle a refinar su búsqueda usando los filtros disponibles.
             
+            INFORMACIÓN DE PROPIEDADES DISPONIBLES:
+            - Tenemos una casa rural con encanto en la Sierra de Gredos, Ávila
+            - El precio es de 295.000€
+            - Tiene 3 dormitorios y 2 baños
+            - 180 metros cuadrados
+            - Tiene jardín
+            - Keywords: rural, montaña, tradicional
+            
             IMPORTANTE:
-            - NO sugieras buscar propiedades fuera de nuestra web
-            - NO menciones otras agencias o servicios inmobiliarios
-            - Si el usuario pregunta por precios específicos, usa el formato "300k" o "1.5M"
-            - Sé amable y profesional
+            - Cuando mencionen Ávila o Sierra de Gredos, SIEMPRE menciona la propiedad anterior
             - Si los filtros actuales son muy restrictivos, sugiere al usuario que los relaje
-            - Si el usuario pregunta por una zona o característica que no tenemos, indícale amablemente que en este momento no tenemos propiedades que coincidan exactamente con esos criterios y sugiere alternativas de nuestra cartera
+            - Usa el formato "295k" para precios
+            - Sé amable y profesional
+            - SIEMPRE menciona las propiedades que tenemos disponibles que coincidan con lo que busca el usuario
             
             Filtros actualmente aplicados: ${JSON.stringify(activeFilters, null, 2)}`
           },
