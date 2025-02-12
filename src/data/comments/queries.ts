@@ -1,12 +1,14 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import type { Comment, CommentResponse, CommentFilters } from "./types";
+import type { PostgrestFilterBuilder } from '@supabase/postgrest-js';
 
 export const fetchComments = async (filters?: CommentFilters): Promise<Comment[]> => {
-  let query = supabase
+  const baseQuery = supabase
     .from('property_comments')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .select('*');
+
+  let query = baseQuery;
 
   if (filters) {
     if (filters.sentiment) {
@@ -26,6 +28,8 @@ export const fetchComments = async (filters?: CommentFilters): Promise<Comment[]
                   .lte('created_at', filters.endDate.toISOString());
     }
   }
+
+  query = query.order('created_at', { ascending: false });
 
   const { data, error } = await query;
 
