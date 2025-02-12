@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Search, Plus, Map, UserRound } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
-import PropertyList from '@/components/PropertyList';
 import PropertyFilters from '@/components/PropertyFilters';
 import Chatbot, { PropertyFilters as ChatbotFilters } from '@/components/Chatbot';
 import { fetchProperties, addInitialProperties } from '@/data/properties/queries';
@@ -15,15 +10,9 @@ import Footer from '@/components/Footer';
 import Testimonials from '@/components/Testimonials';
 import PropertyMap from '@/components/PropertyMap';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useAuth } from '@/components/AuthProvider';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { AddPropertyForm } from '@/components/AddPropertyForm';
+import Header from '@/components/Header';
+import Hero from '@/components/Hero';
+import PropertiesSection from '@/components/PropertiesSection';
 import {
   Sheet,
   SheetContent,
@@ -31,10 +20,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
-  const navigate = useNavigate();
-  const { session } = useAuth();
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -152,51 +140,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="fixed top-0 right-0 p-4 z-50">
-        <Button
-          variant="outline"
-          className="flex items-center gap-2"
-          onClick={() => navigate(session ? '/dashboard' : '/auth')}
-        >
-          <UserRound className="h-4 w-4" />
-          {session ? 'Tu cuenta' : 'Acceder'}
-        </Button>
-      </div>
-
-      <div 
-        className="relative py-8 md:py-16 text-white bg-cover bg-center"
-        style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1800")',
-          minHeight: '300px',
-          maxHeight: '400px'
-        }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        
-        <div className="container mx-auto text-center relative z-10 px-4">
-          <img 
-            src="/logo.svg" 
-            alt="GrennIA Logo" 
-            className="h-6 md:h-10 mx-auto mb-4 md:mb-6"
-          />
-          <h1 className="font-heading text-2xl md:text-4xl font-bold mb-3 md:mb-4">
-            Encuentra el hogar ideal para tu cliente
-          </h1>
-          <p className="text-base md:text-lg mb-4 md:mb-6">
-            La plataforma de IA que te ayuda a ofrecer la mejor vivienda
-          </p>
-          
-          <div className="max-w-2xl mx-auto flex gap-2 px-4">
-            <Input 
-              placeholder="Buscar por ubicación..." 
-              className="bg-white text-gray-900"
-            />
-            <Button className="bg-white text-primary hover:bg-gray-100">
-              <Search className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </div>
+      <Header />
+      <Hero />
 
       <div className="container mx-auto py-6 md:py-12 px-4">
         <div className="flex flex-col md:flex-row gap-8">
@@ -222,47 +167,16 @@ const Index = () => {
             </div>
           )}
 
-          <div className="flex-1">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-              <h2 className="font-heading text-xl md:text-2xl font-semibold">
-                Propiedades destacadas
-              </h2>
-              
-              <div className="flex gap-2 w-full md:w-auto">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowMap(true)}
-                  className="flex-1 md:flex-none items-center gap-2"
-                >
-                  <Map className="h-4 w-4" />
-                  Ver en Mapa
-                </Button>
-                
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="flex-1 md:flex-none">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Añadir Propiedad
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[600px]">
-                    <DialogHeader>
-                      <DialogTitle>Añadir nueva propiedad</DialogTitle>
-                    </DialogHeader>
-                    <AddPropertyForm onSuccess={() => setDialogOpen(false)} />
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
-            
-            <PropertyList
-              properties={currentProperties}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              highlightedPropertyId={highlightedPropertyId}
-              onPageChange={setCurrentPage}
-            />
-          </div>
+          <PropertiesSection
+            properties={currentProperties}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            highlightedPropertyId={highlightedPropertyId}
+            onPageChange={setCurrentPage}
+            onShowMap={() => setShowMap(true)}
+            dialogOpen={dialogOpen}
+            onDialogChange={setDialogOpen}
+          />
         </div>
       </div>
 
