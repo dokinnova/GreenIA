@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -116,7 +117,7 @@ const Chatbot = ({ onFilter, onResetFilter }: ChatbotProps) => {
         {showHint && (
           <div className="animate-bounce mb-2 mr-4 bg-white p-3 rounded-lg shadow-lg">
             <p className="text-sm font-medium">
-              ¡Hola! 👋 Puedo ayudarte a encontrar tu vivienda ideal
+              ¡Hola! 👋 Puedo ayudarte a encontrar la vivienda ideal para tu cliente
             </p>
           </div>
         )}
