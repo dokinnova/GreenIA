@@ -8,20 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import type { Property } from '@/data/properties/types';
+import PropertyRatings from './property/PropertyRatings';
+import PropertyInterestForm from './property/PropertyInterestForm';
+import PropertyImageCarousel from './property/PropertyImageCarousel';
 
 interface PropertyCardProps extends Property {
   isHighlighted?: boolean;
@@ -44,18 +35,9 @@ const PropertyCard = ({
   quality_rating = 3,
   location_rating = 3,
   isHighlighted = false,
-  onClick 
 }: PropertyCardProps) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [showInterestForm, setShowInterestForm] = React.useState(false);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const { toast } = useToast();
-  const [formData, setFormData] = React.useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
 
   const images = React.useMemo(() => {
     if (image_urls && image_urls.length > 0) {
@@ -67,97 +49,6 @@ const PropertyCard = ({
     return ['/placeholder.svg'];
   }, [image_urls, image_url]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmitInterest = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const { error } = await supabase
-        .from('property_interests')
-        .insert({
-          property_id: id,
-          ...formData
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "¡Interés registrado!",
-        description: "Nos pondremos en contacto contigo pronto.",
-      });
-
-      setShowInterestForm(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: ''
-      });
-    } catch (error) {
-      console.error('Error al registrar interés:', error);
-      toast({
-        title: "Error",
-        description: "No se pudo registrar tu interés. Por favor, inténtalo de nuevo.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const getRatingColor = (rating: number) => {
-    switch(rating) {
-      case 1: return 'bg-red-500';
-      case 2: return 'bg-orange-500';
-      case 3: return 'bg-yellow-500';
-      case 4: return 'bg-lime-500';
-      case 5: return 'bg-green-500';
-      default: return 'bg-gray-300';
-    }
-  };
-
-  const renderRatings = () => {
-    return (
-      <div className="flex flex-col gap-2 mt-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 w-16">Precio</span>
-          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full transition-all duration-300 ${getRatingColor(price_rating)}`}
-              style={{ width: `${(price_rating / 5) * 100}%` }}
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 w-16">Calidad</span>
-          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full transition-all duration-300 ${getRatingColor(quality_rating)}`}
-              style={{ width: `${(quality_rating / 5) * 100}%` }}
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 w-16">Ubicación</span>
-          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full transition-all duration-300 ${getRatingColor(location_rating)}`}
-              style={{ width: `${(location_rating / 5) * 100}%` }}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
       <Card 
@@ -167,29 +58,11 @@ const PropertyCard = ({
         onClick={() => setIsDialogOpen(true)}
       >
         <div className="relative w-full aspect-[16/9]">
-          <Carousel className="w-full">
-            <CarouselContent>
-              {images.map((img, index) => (
-                <CarouselItem key={index} className="relative w-full aspect-[16/9]">
-                  <img 
-                    src={img} 
-                    alt={`${title} - imagen ${index + 1}`} 
-                    className="absolute inset-0 w-full h-full object-cover"
-                    onError={(e) => {
-                      console.error('Error loading image:', img);
-                      e.currentTarget.src = '/placeholder.svg';
-                    }}
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            {images.length > 1 && (
-              <>
-                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
-                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-0 hidden md:flex" />
-              </>
-            )}
-          </Carousel>
+          <PropertyImageCarousel 
+            images={images}
+            title={title}
+            compact
+          />
         </div>
 
         <div className="p-2 md:p-3">
@@ -207,7 +80,12 @@ const PropertyCard = ({
               </span>
             )}
           </div>
-          {renderRatings()}
+          <PropertyRatings
+            price_rating={price_rating}
+            quality_rating={quality_rating}
+            location_rating={location_rating}
+            className="mt-3"
+          />
         </div>
       </Card>
 
@@ -218,30 +96,10 @@ const PropertyCard = ({
           </DialogHeader>
           
           <div className="space-y-4">
-            <Carousel className="w-full">
-              <CarouselContent>
-                {images.map((img, index) => (
-                  <CarouselItem key={index}>
-                    <div className="aspect-[16/9] relative">
-                      <img 
-                        src={img} 
-                        alt={`${title} - imagen ${index + 1}`} 
-                        className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                        onError={(e) => {
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              {images.length > 1 && (
-                <>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </>
-              )}
-            </Carousel>
+            <PropertyImageCarousel 
+              images={images}
+              title={title}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -265,7 +123,11 @@ const PropertyCard = ({
               
               <div>
                 <h3 className="text-xl font-semibold mb-2">Valoraciones</h3>
-                {renderRatings()}
+                <PropertyRatings
+                  price_rating={price_rating}
+                  quality_rating={quality_rating}
+                  location_rating={location_rating}
+                />
               </div>
             </div>
 
@@ -276,64 +138,13 @@ const PropertyCard = ({
                 </Button>
               </div>
             ) : (
-              <form onSubmit={handleSubmitInterest} className="space-y-4 mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Nombre completo *</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Teléfono</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="message">Mensaje</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    placeholder="Escribe aquí cualquier pregunta o comentario..."
-                    className="min-h-[100px]"
-                  />
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button 
-                    type="button" 
-                    variant="outline"
-                    onClick={() => setShowInterestForm(false)}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Enviando...' : 'Enviar'}
-                  </Button>
-                </div>
-              </form>
+              <PropertyInterestForm
+                propertyId={id}
+                onCancel={() => setShowInterestForm(false)}
+                onSuccess={() => {
+                  setShowInterestForm(false);
+                }}
+              />
             )}
           </div>
         </DialogContent>
