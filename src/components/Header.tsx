@@ -13,10 +13,10 @@ const Header = () => {
     <div className="fixed top-0 right-0 p-4 z-50">
       <Button
         className="flex items-center gap-2 bg-white text-primary hover:bg-gray-100"
-        onClick={() => navigate(session ? '/dashboard' : '/auth')}
+        onClick={() => navigate(session ? '/profile' : '/auth')}
       >
         <UserRound className="h-4 w-4" />
-        {session ? 'Tu cuenta' : 'Acceder'}
+        {session ? 'Tu perfil' : 'Acceder'}
       </Button>
     </div>
   );

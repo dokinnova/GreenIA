@@ -240,7 +240,9 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
+          full_name: string | null
           id: string
+          phone_number: string | null
           role: string | null
           two_factor_enabled: boolean | null
           two_factor_secret: string | null
@@ -249,7 +251,9 @@ export type Database = {
         Insert: {
           created_at?: string
           email?: string | null
+          full_name?: string | null
           id: string
+          phone_number?: string | null
           role?: string | null
           two_factor_enabled?: boolean | null
           two_factor_secret?: string | null
@@ -258,7 +262,9 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string | null
+          full_name?: string | null
           id?: string
+          phone_number?: string | null
           role?: string | null
           two_factor_enabled?: boolean | null
           two_factor_secret?: string | null

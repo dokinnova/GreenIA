@@ -16,6 +16,7 @@ import MarketAnalysis from "./pages/MarketAnalysis";
 import AdminAutomation from "./pages/AdminAutomation";
 import CookieConsent from "./components/CookieConsent";
 import AuthPage from "./pages/Auth";
+import ProfilePage from "./pages/Profile";
 import { AuthProvider } from "./components/AuthProvider";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -33,6 +34,11 @@ const App = () => (
             <Route path="/legal" element={<Legal />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
