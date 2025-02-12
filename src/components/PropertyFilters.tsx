@@ -1,6 +1,6 @@
+
 import React from 'react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import {
   Select,
   SelectContent,
@@ -11,6 +11,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Star } from 'lucide-react';
 
 interface PropertyFiltersProps {
   onFilter: (filters: any) => void;
@@ -23,6 +24,7 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
   const [bedrooms, setBedrooms] = React.useState<string>("");
   const [bathrooms, setBathrooms] = React.useState<string>("");
   const [hasGarden, setHasGarden] = React.useState(false);
+  const [minRating, setMinRating] = React.useState<number>(0);
 
   const handleFilter = () => {
     onFilter({
@@ -33,7 +35,18 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
       bedrooms: bedrooms ? parseInt(bedrooms) : undefined,
       bathrooms: bathrooms ? parseInt(bathrooms) : undefined,
       hasGarden,
+      minRating,
     });
+  };
+
+  const handleReset = () => {
+    setPriceRange([0, 1000000]);
+    setSizeRange([0, 500]);
+    setBedrooms("");
+    setBathrooms("");
+    setHasGarden(false);
+    setMinRating(0);
+    onFilter({});
   };
 
   return (
@@ -46,6 +59,8 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="newest">Más recientes</SelectItem>
+            <SelectItem value="rating-desc">Mejor valorados</SelectItem>
+            <SelectItem value="rating-asc">Peor valorados</SelectItem>
             <SelectItem value="price-asc">Precio: menor a mayor</SelectItem>
             <SelectItem value="price-desc">Precio: mayor a menor</SelectItem>
             <SelectItem value="size-asc">Tamaño: menor a mayor</SelectItem>
@@ -91,15 +106,36 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
           </div>
         </div>
 
+        <div>
+          <Label>Valoración mínima</Label>
+          <div className="pt-2">
+            <Slider
+              defaultValue={[0]}
+              max={5}
+              step={0.5}
+              value={[minRating]}
+              onValueChange={(value) => setMinRating(value[0])}
+              className="my-4"
+            />
+            <div className="flex justify-between text-sm text-gray-500">
+              <span className="flex items-center gap-1">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                {minRating}
+              </span>
+              <span>5.0</span>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Habitaciones</Label>
-            <Select onValueChange={setBedrooms}>
+            <Select value={bedrooms} onValueChange={setBedrooms}>
               <SelectTrigger>
                 <SelectValue placeholder="Cualquiera" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any">Cualquiera</SelectItem>
+                <SelectItem value="">Cualquiera</SelectItem>
                 {[1, 2, 3, 4, 5].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num}+ habitaciones
@@ -111,12 +147,12 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
 
           <div className="space-y-2">
             <Label>Baños</Label>
-            <Select onValueChange={setBathrooms}>
+            <Select value={bathrooms} onValueChange={setBathrooms}>
               <SelectTrigger>
                 <SelectValue placeholder="Cualquiera" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any">Cualquiera</SelectItem>
+                <SelectItem value="">Cualquiera</SelectItem>
                 {[1, 2, 3, 4].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num}+ baños
@@ -136,9 +172,14 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
           <Label htmlFor="garden">Con jardín</Label>
         </div>
 
-        <Button onClick={handleFilter} className="w-full">
-          Aplicar filtros
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleFilter} className="flex-1">
+            Aplicar filtros
+          </Button>
+          <Button variant="outline" onClick={handleReset}>
+            Limpiar
+          </Button>
+        </div>
       </div>
     </div>
   );

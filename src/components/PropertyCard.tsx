@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Card } from './ui/card';
-import { Trees } from 'lucide-react';
+import { Trees, Star } from 'lucide-react';
 import { Progress } from './ui/progress';
 import {
   Carousel,
@@ -22,6 +21,7 @@ interface PropertyCardProps {
   image_urls?: string[] | null;
   keywords: string[];
   has_garden: boolean;
+  rating?: number;
   isHighlighted?: boolean;
   showActions?: boolean;
 }
@@ -36,6 +36,7 @@ const PropertyCard = ({
   image_url,
   image_urls = [],
   has_garden,
+  rating = 0,
   isHighlighted = false 
 }: PropertyCardProps) => {
   const images = React.useMemo(() => {
@@ -48,37 +49,20 @@ const PropertyCard = ({
     return ['/placeholder.svg'];
   }, [image_urls, image_url]);
 
-  // Valor temporal para la valoración (1-5)
-  const rating = Math.floor(Math.random() * 5) + 1;
-
-  const getRatingColor = (rating: number) => {
-    switch (rating) {
-      case 1:
-        return 'bg-[#ea384c]';
-      case 2:
-        return 'bg-[#F97316]';
-      case 3:
-        return 'bg-[#FEF7CD]';
-      case 4:
-        return 'bg-[#4ADE80]';
-      case 5:
-        return 'bg-[#166534]';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
-  const renderRatingBars = () => {
+  const renderRating = () => {
     return (
-      <div className="flex w-full h-2 bg-white border border-gray-200 rounded-full overflow-hidden">
-        {[1, 2, 3, 4, 5].map((value) => (
-          <div
-            key={value}
-            className={`flex-1 ${value <= rating ? getRatingColor(rating) : 'bg-white'} ${
-              value > 1 ? 'border-l border-white' : ''
+      <div className="flex items-center gap-1 mt-2">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`h-4 w-4 ${
+              star <= rating
+                ? 'fill-yellow-400 text-yellow-400'
+                : 'fill-gray-200 text-gray-200'
             }`}
           />
         ))}
+        <span className="text-sm text-gray-600 ml-1">{rating.toFixed(1)}</span>
       </div>
     );
   };
@@ -128,19 +112,7 @@ const PropertyCard = ({
             </span>
           )}
         </div>
-
-        <div className="mt-2">
-          <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-600">Valoración</span>
-            <span className="font-semibold">{rating}/5</span>
-          </div>
-          {renderRatingBars()}
-          <div className="flex justify-between text-[9px] text-gray-500 mt-0.5">
-            {[1, 2, 3, 4, 5].map((level) => (
-              <span key={level}>{level}</span>
-            ))}
-          </div>
-        </div>
+        {renderRating()}
       </div>
     </Card>
   );

@@ -287,6 +287,7 @@ export type Database = {
           keywords: string[] | null
           location: string
           price: number
+          rating: number | null
           size: number
           title: string
           updated_at: string
@@ -302,6 +303,7 @@ export type Database = {
           keywords?: string[] | null
           location: string
           price: number
+          rating?: number | null
           size: number
           title: string
           updated_at?: string
@@ -317,6 +319,7 @@ export type Database = {
           keywords?: string[] | null
           location?: string
           price?: number
+          rating?: number | null
           size?: number
           title?: string
           updated_at?: string

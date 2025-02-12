@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
@@ -59,6 +60,10 @@ const Index = () => {
           return a.size - b.size;
         case 'size-desc':
           return b.size - a.size;
+        case 'rating-desc':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'rating-asc':
+          return (a.rating || 0) - (b.rating || 0);
         case 'newest':
         default:
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -77,6 +82,7 @@ const Index = () => {
       if (filters.bedrooms && property.bedrooms < filters.bedrooms) return false;
       if (filters.bathrooms && property.bathrooms < filters.bathrooms) return false;
       if (filters.hasGarden && !property.has_garden) return false;
+      if (filters.minRating && (property.rating || 0) < filters.minRating) return false;
       return true;
     });
 
