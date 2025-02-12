@@ -29,18 +29,16 @@ const PropertyMap = ({ properties, onClose }: PropertyMapProps) => {
       </div>
       
       <MapContainer
+        center={defaultPosition}
         style={{ height: '100%', width: '100%' }}
         className="z-0"
+        scrollWheelZoom
+        doubleClickZoom
         zoom={6}
-        minZoom={3}
-        maxZoom={18}
-        scrollWheelZoom={true}
-        doubleClickZoom={true}
-        defaultCenter={defaultPosition}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
         {properties.map((property) => {
