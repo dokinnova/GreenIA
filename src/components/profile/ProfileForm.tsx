@@ -17,7 +17,7 @@ import {
 interface ProfileFormValues {
   full_name: string;
   phone_number: string;
-  email?: string;
+  email: string;  // Ya no es opcional
 }
 
 interface ProfileFormProps {

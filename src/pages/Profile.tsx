@@ -37,7 +37,7 @@ const ProfilePage = () => {
       setFormValues({
         full_name: profile.full_name || '',
         phone_number: profile.phone_number || '',
-        email: profile.email || user.email || '',
+        email: user.email || '',  // Usamos directamente el email del usuario de auth
       });
       setAvatarUrl(profile.avatar_url);
       setTwoFactorEnabled(profile.two_factor_enabled || false);
@@ -75,7 +75,7 @@ const ProfilePage = () => {
           
           <ProfileForm
             defaultValues={formValues}
-            onFormChange={setFormValues}
+            onFormChange={(values) => setFormValues(values)}
           />
 
           <TwoFactorToggle
