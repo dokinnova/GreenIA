@@ -116,16 +116,34 @@ const PropertyCard = ({
           )}
         </div>
 
-        {/* Barra de valoración */}
+        {/* Barra de valoración con separadores */}
         <div className="mt-3">
           <div className="flex justify-between text-sm mb-1">
             <span className="text-gray-600">Valoración</span>
             <span className="font-semibold">{rating}/5</span>
           </div>
-          <Progress 
-            value={ratingPercentage} 
-            className={`h-2.5 bg-gray-100 ${getRatingColor(rating)}`}
-          />
+          <div className="relative">
+            {/* Separadores */}
+            <div className="absolute inset-0 flex justify-between pointer-events-none px-[1px]">
+              {[1, 2, 3, 4].map((level) => (
+                <div 
+                  key={level}
+                  className="w-[2px] h-2.5 bg-white/80 z-10"
+                />
+              ))}
+            </div>
+            {/* Barra de progreso */}
+            <Progress 
+              value={ratingPercentage} 
+              className={`h-2.5 bg-gray-100 ${getRatingColor(rating)}`}
+            />
+            {/* Números de nivel */}
+            <div className="flex justify-between text-[10px] text-gray-500 mt-1 px-[1px]">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <span key={level}>{level}</span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </Card>
