@@ -19,30 +19,45 @@ const ProfilePage = () => {
     email: '',
   });
 
+  const loadUserProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log('No user found');
+        return;
+      }
+
+      console.log('User email from auth:', user.email);
+
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('full_name, phone_number, avatar_url, two_factor_enabled')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error loading profile:', error);
+        return;
+      }
+
+      const updatedValues = {
+        full_name: profile?.full_name || '',
+        phone_number: profile?.phone_number || '',
+        email: user.email || '',
+      };
+
+      console.log('Setting form values:', updatedValues);
+      setFormValues(updatedValues);
+      setAvatarUrl(profile?.avatar_url || null);
+      setTwoFactorEnabled(profile?.two_factor_enabled || false);
+    } catch (error) {
+      console.error('Error in loadUserProfile:', error);
+    }
+  };
+
   React.useEffect(() => {
     loadUserProfile();
   }, []);
-
-  const loadUserProfile = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('full_name, phone_number, avatar_url, two_factor_enabled, email')
-      .eq('id', user.id)
-      .single();
-
-    if (profile) {
-      setFormValues({
-        full_name: profile.full_name || '',
-        phone_number: profile.phone_number || '',
-        email: user.email || '',  // Usamos directamente el email del usuario de auth
-      });
-      setAvatarUrl(profile.avatar_url);
-      setTwoFactorEnabled(profile.two_factor_enabled || false);
-    }
-  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
