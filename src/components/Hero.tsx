@@ -23,7 +23,7 @@ const Hero = () => {
           className="h-6 md:h-10 mx-auto mb-4 md:mb-6"
         />
         <h1 className="font-heading text-2xl md:text-4xl font-bold mb-3 md:mb-4">
-          Encuentra el hogar ideal para tu cliente
+          Encuentra tu hogar ideal
         </h1>
         <p className="text-base md:text-lg mb-4 md:mb-6">
           La plataforma de IA que te ayuda a ofrecer la mejor vivienda
