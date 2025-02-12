@@ -4,16 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, LineChart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { format, subMonths } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import { Line, LineChart as RechartsLineChart, XAxis, YAxis, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { ResponsiveContainer, LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const Statistics = () => {
   const navigate = useNavigate();
 
-  // Mock data for the chart
   const data = [
     { month: 'Ene', properties: 12 },
     { month: 'Feb', properties: 15 },
@@ -48,24 +43,24 @@ const Statistics = () => {
         <div className="grid gap-6">
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Propiedades Listadas por Mes</h2>
-            <div className="h-[400px]">
-              <ChartContainer>
+            <div style={{ width: '100%', height: 400 }}>
+              <ResponsiveContainer>
                 <RechartsLineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="month"
-                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    tick={{ fill: 'currentColor' }}
                   />
                   <YAxis 
-                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    tick={{ fill: 'currentColor' }}
                     label={{ 
                       value: 'Número de propiedades', 
                       angle: -90, 
                       position: 'insideLeft',
-                      fill: 'hsl(var(--foreground))'
+                      fill: 'currentColor'
                     }}
                   />
-                  <ChartTooltip />
+                  <Tooltip />
                   <Line
                     type="monotone"
                     dataKey="properties"
@@ -74,11 +69,11 @@ const Statistics = () => {
                     strokeWidth={2}
                   />
                 </RechartsLineChart>
-              </ChartContainer>
+              </ResponsiveContainer>
             </div>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="p-4">
               <h3 className="text-lg font-semibold mb-2">Total de Propiedades</h3>
               <p className="text-3xl font-bold text-primary">120</p>
