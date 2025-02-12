@@ -38,7 +38,6 @@ const AuthPage = () => {
           providers={[]}
           view="sign_up"
           showLinks={true}
-          factors={['totp']}
           redirectTo={`${window.location.origin}/dashboard`}
           localization={{
             variables: {
