@@ -24,7 +24,7 @@ const Dashboard = () => {
       onClick: () => {
         window.open('/properties-management', '_blank');
       },
-      gradient: "from-[#D3E4FD] to-[#9b87f5]"
+      bgColor: "bg-[#D3E4FD]"
     },
     {
       title: "Análisis predictivo de precios",
@@ -33,7 +33,7 @@ const Dashboard = () => {
       onClick: () => {
         window.open('/price-prediction', '_blank');
       },
-      gradient: "from-[#F2FCE2] to-[#9b87f5]"
+      bgColor: "bg-[#F2FCE2]"
     },
     {
       title: "Análisis de Mercado y Tendencias",
@@ -42,7 +42,7 @@ const Dashboard = () => {
       onClick: () => {
         window.open('/market-analysis', '_blank');
       },
-      gradient: "from-[#D6BCFA] to-[#9b87f5]"
+      bgColor: "bg-[#D6BCFA]"
     },
     {
       title: "Análisis de Sentimiento y Opiniones",
@@ -51,7 +51,7 @@ const Dashboard = () => {
       onClick: () => {
         window.open('/sentiment-analysis', '_blank');
       },
-      gradient: "from-[#F2FCE2] to-[#D6BCFA]"
+      bgColor: "bg-[#F2FCE2]"
     },
     {
       title: "Usuarios",
@@ -60,7 +60,7 @@ const Dashboard = () => {
       onClick: () => {
         window.open('/users-management', '_blank');
       },
-      gradient: "from-[#D3E4FD] to-[#D6BCFA]"
+      bgColor: "bg-[#D3E4FD]"
     },
     {
       title: "Estadísticas",
@@ -69,12 +69,12 @@ const Dashboard = () => {
       onClick: () => {
         window.open('/statistics', '_blank');
       },
-      gradient: "from-[#F2FCE2] to-[#D3E4FD]"
+      bgColor: "bg-[#F2FCE2]"
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto py-8 px-4">
         <div className="flex items-center gap-4 mb-8">
           <Button 
@@ -105,9 +105,8 @@ const Dashboard = () => {
               className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
               onClick={item.onClick}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-5`} />
               <CardHeader className="flex flex-row items-center gap-4 relative">
-                <div className={`p-3 rounded-lg bg-gradient-to-br ${item.gradient} bg-opacity-50`}>
+                <div className={`p-3 rounded-lg ${item.bgColor} bg-opacity-50`}>
                   <item.icon className="h-6 w-6 text-[#1A1F2C]" />
                 </div>
                 <div>
