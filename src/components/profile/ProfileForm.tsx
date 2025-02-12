@@ -17,6 +17,7 @@ import {
 interface ProfileFormValues {
   full_name: string;
   phone_number: string;
+  email?: string;
 }
 
 interface ProfileFormProps {
@@ -66,6 +67,20 @@ export const ProfileForm = ({ defaultValues, onFormChange }: ProfileFormProps) =
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Correo electrónico</FormLabel>
+              <FormControl>
+                <Input {...field} disabled className="bg-gray-50" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="full_name"

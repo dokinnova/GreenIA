@@ -16,6 +16,7 @@ const ProfilePage = () => {
   const [formValues, setFormValues] = React.useState({
     full_name: '',
     phone_number: '',
+    email: '',
   });
 
   React.useEffect(() => {
@@ -28,7 +29,7 @@ const ProfilePage = () => {
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('full_name, phone_number, avatar_url, two_factor_enabled')
+      .select('full_name, phone_number, avatar_url, two_factor_enabled, email')
       .eq('id', user.id)
       .single();
 
@@ -36,6 +37,7 @@ const ProfilePage = () => {
       setFormValues({
         full_name: profile.full_name || '',
         phone_number: profile.phone_number || '',
+        email: profile.email || user.email || '',
       });
       setAvatarUrl(profile.avatar_url);
       setTwoFactorEnabled(profile.two_factor_enabled || false);
