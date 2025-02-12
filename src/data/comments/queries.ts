@@ -78,8 +78,7 @@ export const updateCommentStatus = async (commentId: number, updates: {
 export const getCommentStats = async () => {
   const { data, error } = await supabase
     .from('property_comments')
-    .select('sentiment')
-    .order('created_at', { ascending: false });
+    .select('sentiment');
 
   if (error) {
     console.error('Error fetching comment stats:', error);
@@ -92,8 +91,10 @@ export const getCommentStats = async () => {
     negative: 0,
   };
 
-  data.forEach(comment => {
-    stats[comment.sentiment]++;
+  data.forEach((comment) => {
+    if (comment.sentiment) {
+      stats[comment.sentiment]++;
+    }
   });
 
   return stats;
@@ -110,19 +111,31 @@ export const getCommentTrends = async () => {
     throw error;
   }
 
+  type TrendData = {
+    [key: string]: {
+      positive: number;
+      neutral: number;
+      negative: number;
+    };
+  };
+
   // Agrupar por fecha y contar sentimientos
-  const groupedByDate = data.reduce((acc: any, comment) => {
+  const groupedByDate = data.reduce<TrendData>((acc, comment) => {
     const date = new Date(comment.created_at).toLocaleDateString();
     if (!acc[date]) {
       acc[date] = { positive: 0, neutral: 0, negative: 0 };
     }
-    acc[date][comment.sentiment]++;
+    if (comment.sentiment) {
+      acc[date][comment.sentiment]++;
+    }
     return acc;
   }, {});
 
   // Convertir a array para el gráfico
   return Object.entries(groupedByDate).map(([date, counts]) => ({
     date,
-    ...counts,
+    positive: counts.positive,
+    neutral: counts.neutral,
+    negative: counts.negative,
   }));
 };
