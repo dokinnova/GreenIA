@@ -1,7 +1,7 @@
+
 import React from 'react';
 import { Card } from './ui/card';
 import { Trees, Star } from 'lucide-react';
-import { Progress } from './ui/progress';
 import {
   Carousel,
   CarouselContent,
@@ -9,21 +9,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import type { Property } from '@/data/properties/types';
 
-interface PropertyCardProps {
-  title: string;
-  price: number;
-  location: string;
-  bedrooms: number;
-  bathrooms: number;
-  size: number;
-  image_url: string | null;
-  image_urls?: string[] | null;
-  keywords: string[];
-  has_garden: boolean;
-  rating?: number;
+interface PropertyCardProps extends Property {
   isHighlighted?: boolean;
   showActions?: boolean;
+  onClick?: () => void;
 }
 
 const PropertyCard = ({ 
@@ -37,7 +28,8 @@ const PropertyCard = ({
   image_urls = [],
   has_garden,
   rating = 0,
-  isHighlighted = false 
+  isHighlighted = false,
+  onClick 
 }: PropertyCardProps) => {
   const images = React.useMemo(() => {
     if (image_urls && image_urls.length > 0) {
@@ -50,27 +42,39 @@ const PropertyCard = ({
   }, [image_urls, image_url]);
 
   const renderRating = () => {
+    const ratingValue = rating || 0;
     return (
-      <div className="flex items-center gap-1 mt-2">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className={`h-4 w-4 ${
-              star <= rating
-                ? 'fill-yellow-400 text-yellow-400'
-                : 'fill-gray-200 text-gray-200'
-            }`}
+      <div className="flex flex-col gap-1 mt-2">
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`h-4 w-4 ${
+                star <= ratingValue
+                  ? 'fill-yellow-400 text-yellow-400'
+                  : 'fill-gray-200 text-gray-200'
+              }`}
+            />
+          ))}
+          <span className="text-sm text-gray-600 ml-1">{ratingValue.toFixed(1)}</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-1.5">
+          <div 
+            className="bg-yellow-400 h-1.5 rounded-full transition-all duration-300"
+            style={{ width: `${(ratingValue / 5) * 100}%` }}
           />
-        ))}
-        <span className="text-sm text-gray-600 ml-1">{rating.toFixed(1)}</span>
+        </div>
       </div>
     );
   };
 
   return (
-    <Card className={`w-full overflow-hidden transition-all duration-300 ${
-      isHighlighted ? 'ring-2 ring-primary scale-105' : ''
-    }`}>
+    <Card 
+      className={`w-full overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg ${
+        isHighlighted ? 'ring-2 ring-primary scale-105' : ''
+      }`}
+      onClick={onClick}
+    >
       <div className="relative w-full aspect-[16/9]">
         <Carousel className="w-full">
           <CarouselContent>
