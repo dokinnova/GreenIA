@@ -26,12 +26,14 @@ export const getLocations = async (): Promise<string[]> => {
   const { data, error } = await supabase
     .from('properties')
     .select('location')
-    .distinct();
+    .order('location');
 
   if (error) {
     console.error('Error fetching locations:', error);
     throw error;
   }
 
-  return data.map(item => item.location);
+  // Remove duplicates using Set
+  const uniqueLocations = [...new Set(data.map(item => item.location))];
+  return uniqueLocations;
 };
