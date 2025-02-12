@@ -24,6 +24,14 @@ const Dashboard = () => {
       }
     },
     {
+      title: "Análisis predictivo de precios",
+      description: "Previsión de tendencias del mercado inmobiliario",
+      icon: LineChart,
+      onClick: () => {
+        window.open('/price-prediction', '_blank');
+      }
+    },
+    {
       title: "Usuarios",
       description: "Administra los usuarios",
       icon: Users,
