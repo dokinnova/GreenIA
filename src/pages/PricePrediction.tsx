@@ -50,7 +50,9 @@ const PricePrediction = () => {
     precio_medio: Number(trend.average_price.toFixed(2))
   }));
 
-  const isPositiveTrend = trends[0]?.price_change_percentage > 0;
+  // Calculamos la tendencia general mirando el primer y último precio
+  const isPositiveTrend = trends.length >= 2 ? 
+    trends[trends.length - 1].average_price > trends[0].average_price : false;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -83,7 +85,11 @@ const PricePrediction = () => {
           </Card>
         ) : (
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-            <TrendSummary trend={trends[0]} isPositiveTrend={isPositiveTrend} />
+            <TrendSummary 
+              trend={trends[trends.length - 1]} 
+              isPositiveTrend={isPositiveTrend}
+              allTrends={trends}
+            />
             <PriceChart data={chartData} />
           </div>
         )}

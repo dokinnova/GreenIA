@@ -7,11 +7,12 @@ import { PriceTrend } from '@/data/price-prediction/types';
 interface TrendSummaryProps {
   trend: PriceTrend;
   isPositiveTrend: boolean;
+  allTrends: PriceTrend[];
 }
 
-export const TrendSummary = ({ trend, isPositiveTrend }: TrendSummaryProps) => {
-  // Calculamos si es positivo basándonos en el porcentaje de cambio de precio
-  const isMarketGrowing = trend?.price_change_percentage > 0;
+export const TrendSummary = ({ trend, isPositiveTrend, allTrends }: TrendSummaryProps) => {
+  // Calculamos la tendencia basándonos en el primer y último precio
+  const isMarketGrowing = isPositiveTrend;
 
   return (
     <Card className="p-6 lg:col-span-1">
