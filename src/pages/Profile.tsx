@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -143,6 +142,11 @@ const ProfilePage = () => {
     fileInputRef.current?.click();
   };
 
+  // Función para obtener las iniciales del nombre
+  const getInitials = (name: string) => {
+    return name?.charAt(0).toUpperCase() || '?';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-md mx-auto">
@@ -163,8 +167,8 @@ const ProfilePage = () => {
             <div className="relative">
               <Avatar className="h-24 w-24">
                 <AvatarImage src={avatarUrl || undefined} />
-                <AvatarFallback>
-                  {form.watch('full_name')?.charAt(0) || '?'}
+                <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
+                  {getInitials(form.watch('full_name'))}
                 </AvatarFallback>
               </Avatar>
               <Button
