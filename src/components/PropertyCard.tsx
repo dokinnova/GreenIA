@@ -57,11 +57,11 @@ const PropertyCard = ({
       case 2:
         return 'bg-[#F97316]'; // Naranja
       case 3:
-        return 'bg-[#FEF7CD]'; // Amarillo claro
+        return 'bg-[#FEF7CD]'; // Amarillo
       case 4:
-        return 'bg-[#4ADE80]'; // Verde medio
+        return 'bg-[#4ADE80]'; // Verde muy claro
       case 5:
-        return 'bg-[#0EA5E9]'; // Verde azulado
+        return 'bg-[#166534]'; // Verde oscuro
       default:
         return 'bg-gray-500';
     }
