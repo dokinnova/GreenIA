@@ -59,14 +59,6 @@ const AuthPage = () => {
                 link_text: '¿No tienes una cuenta? Regístrate',
                 confirmation_text: 'Revisa tu correo electrónico para confirmar tu cuenta',
               },
-              mfa: {
-                totp_enabled: 'Autenticación de dos factores activada',
-                totp_disabled: 'Autenticación de dos factores desactivada',
-                verify_with_totp: 'Verificar con código de autenticación',
-                verify_totp: 'Verificar código',
-                setup_totp: 'Configurar autenticación de dos factores',
-                enter_totp: 'Ingresa el código de autenticación',
-              },
             },
           }}
         />
