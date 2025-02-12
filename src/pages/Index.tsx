@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Plus, Map, LayoutDashboard } from 'lucide-react';
+import { Search, Plus, Map, UserRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import PropertyList from '@/components/PropertyList';
@@ -16,6 +15,7 @@ import Footer from '@/components/Footer';
 import Testimonials from '@/components/Testimonials';
 import PropertyMap from '@/components/PropertyMap';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/components/AuthProvider';
 import {
   Dialog,
   DialogContent,
@@ -34,6 +34,7 @@ import {
 
 const Index = () => {
   const navigate = useNavigate();
+  const { session } = useAuth();
   const [highlightedPropertyId, setHighlightedPropertyId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -151,6 +152,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="fixed top-0 right-0 p-4 z-50">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          onClick={() => navigate(session ? '/dashboard' : '/auth')}
+        >
+          <UserRound className="h-4 w-4" />
+          {session ? 'Tu cuenta' : 'Acceder'}
+        </Button>
+      </div>
+
       <div 
         className="relative py-8 md:py-16 text-white bg-cover bg-center"
         style={{
@@ -224,15 +236,6 @@ const Index = () => {
                 >
                   <Map className="h-4 w-4" />
                   Ver en Mapa
-                </Button>
-                
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/dashboard')}
-                  className="flex-1 md:flex-none items-center gap-2"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Panel de Control
                 </Button>
                 
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
