@@ -33,30 +33,22 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `Eres un asistente inmobiliario experto que ayuda a los usuarios a encontrar propiedades en nuestra web. 
-            Tu trabajo es entender las necesidades del usuario y ayudarle a refinar su búsqueda usando los filtros disponibles.
-            
-            INFORMACIÓN DE PROPIEDADES DISPONIBLES:
-            - Tenemos una casa rural con encanto en la Sierra de Gredos, Ávila
-            - El precio es de 295.000€
-            - Tiene 3 dormitorios y 2 baños
-            - 180 metros cuadrados
-            - Tiene jardín
-            - Keywords: rural, montaña, tradicional
-            
-            IMPORTANTE:
-            - Cuando mencionen Ávila o Sierra de Gredos, SIEMPRE menciona la propiedad anterior
-            - Si los filtros actuales son muy restrictivos, sugiere al usuario que los relaje
-            - Usa el formato "295k" para precios
-            - Sé amable y profesional
-            - SIEMPRE menciona las propiedades que tenemos disponibles que coincidan con lo que busca el usuario
-            
-            Filtros actualmente aplicados: ${JSON.stringify(activeFilters, null, 2)}`
+            content: `Asistente inmobiliario experto. Propiedades disponibles:
+- Casa rural en Sierra de Gredos, Ávila: 295k€, 3 dorm, 2 baños, 180m², jardín.
+Keywords: rural, montaña, tradicional.
+
+Reglas:
+- Si mencionan Ávila/Gredos, recomienda la casa rural
+- Usa formato "295k" para precios
+- Sugiere relajar filtros si son restrictivos
+- Sé amable y profesional
+
+Filtros actuales: ${JSON.stringify(activeFilters)}`
           },
           { role: 'user', content: message }
         ],
         temperature: 0.7,
-        max_tokens: 500
+        max_tokens: 300
       })
     });
 
