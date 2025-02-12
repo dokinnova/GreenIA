@@ -98,3 +98,31 @@ export const getCommentStats = async () => {
 
   return stats;
 };
+
+export const getCommentTrends = async () => {
+  const { data, error } = await supabase
+    .from('property_comments')
+    .select('sentiment, created_at')
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching comment trends:', error);
+    throw error;
+  }
+
+  // Agrupar por fecha y contar sentimientos
+  const groupedByDate = data.reduce((acc: any, comment) => {
+    const date = new Date(comment.created_at).toLocaleDateString();
+    if (!acc[date]) {
+      acc[date] = { positive: 0, neutral: 0, negative: 0 };
+    }
+    acc[date][comment.sentiment]++;
+    return acc;
+  }, {});
+
+  // Convertir a array para el gráfico
+  return Object.entries(groupedByDate).map(([date, counts]) => ({
+    date,
+    ...counts,
+  }));
+};
