@@ -53,17 +53,17 @@ const PropertyCard = ({
   const getRatingColor = (rating: number) => {
     switch (rating) {
       case 1:
-        return 'bg-red-500';
+        return 'bg-[#ea384c]'; // Rojo
       case 2:
-        return 'bg-orange-500';
+        return 'bg-[#F97316]'; // Naranja
       case 3:
-        return 'bg-yellow-500';
+        return 'bg-[#FEF7CD]'; // Amarillo claro
       case 4:
-        return 'bg-green-500';
+        return 'bg-[#A3E635]'; // Verde lima
       case 5:
-        return 'bg-teal-500';
+        return 'bg-[#4ADE80]'; // Verde medio
       case 6:
-        return 'bg-blue-500';
+        return 'bg-[#0EA5E9]'; // Verde azulado
       default:
         return 'bg-gray-500';
     }
@@ -126,8 +126,7 @@ const PropertyCard = ({
           </div>
           <Progress 
             value={ratingPercentage} 
-            className="h-2.5"
-            indicatorClassName={getRatingColor(rating)}
+            className={`h-2.5 bg-gray-100 ${getRatingColor(rating)}`}
           />
         </div>
       </div>
