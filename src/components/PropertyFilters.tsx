@@ -26,7 +26,7 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
   const [hasGarden, setHasGarden] = React.useState(false);
   const [minRating, setMinRating] = React.useState<number>(0);
 
-  const handleFilter = () => {
+  const applyFilters = React.useCallback(() => {
     onFilter({
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
@@ -37,7 +37,11 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
       hasGarden,
       minRating,
     });
-  };
+  }, [priceRange, sizeRange, bedrooms, bathrooms, hasGarden, minRating, onFilter]);
+
+  React.useEffect(() => {
+    applyFilters();
+  }, [priceRange, sizeRange, bedrooms, bathrooms, hasGarden, minRating, applyFilters]);
 
   const handleReset = () => {
     setPriceRange([0, 1000000]);
@@ -46,7 +50,6 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
     setBathrooms("any");
     setHasGarden(false);
     setMinRating(0);
-    onFilter({});
   };
 
   return (
@@ -172,12 +175,9 @@ const PropertyFilters = ({ onFilter, onSort }: PropertyFiltersProps) => {
           <Label htmlFor="garden">Con jardín</Label>
         </div>
 
-        <div className="flex gap-2">
-          <Button onClick={handleFilter} className="flex-1">
-            Aplicar filtros
-          </Button>
+        <div className="flex justify-end">
           <Button variant="outline" onClick={handleReset}>
-            Limpiar
+            Limpiar filtros
           </Button>
         </div>
       </div>
