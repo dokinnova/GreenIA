@@ -15,6 +15,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import type { Property } from '@/data/properties/types';
 
 interface PropertyCardProps extends Property {
@@ -24,6 +30,7 @@ interface PropertyCardProps extends Property {
 }
 
 const PropertyCard = ({ 
+  id,
   title, 
   price, 
   location, 
@@ -40,6 +47,15 @@ const PropertyCard = ({
   onClick 
 }: PropertyCardProps) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [showInterestForm, setShowInterestForm] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { toast } = useToast();
+  const [formData, setFormData] = React.useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
 
   const images = React.useMemo(() => {
     if (image_urls && image_urls.length > 0) {
@@ -50,6 +66,52 @@ const PropertyCard = ({
     }
     return ['/placeholder.svg'];
   }, [image_urls, image_url]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmitInterest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('property_interests')
+        .insert({
+          property_id: id,
+          ...formData
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "¡Interés registrado!",
+        description: "Nos pondremos en contacto contigo pronto.",
+      });
+
+      setShowInterestForm(false);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Error al registrar interés:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo registrar tu interés. Por favor, inténtalo de nuevo.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const getRatingColor = (rating: number) => {
     switch(rating) {
@@ -206,6 +268,73 @@ const PropertyCard = ({
                 {renderRatings()}
               </div>
             </div>
+
+            {!showInterestForm ? (
+              <div className="flex justify-center mt-6">
+                <Button onClick={() => setShowInterestForm(true)}>
+                  Me interesa esta propiedad
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmitInterest} className="space-y-4 mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nombre completo *</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Teléfono</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="message">Mensaje</Label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Escribe aquí cualquier pregunta o comentario..."
+                    className="min-h-[100px]"
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    onClick={() => setShowInterestForm(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? 'Enviando...' : 'Enviar'}
+                  </Button>
+                </div>
+              </form>
+            )}
           </div>
         </DialogContent>
       </Dialog>

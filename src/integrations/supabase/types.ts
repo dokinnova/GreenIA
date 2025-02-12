@@ -388,6 +388,47 @@ export type Database = {
           },
         ]
       }
+      property_interests: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          message: string | null
+          name: string
+          phone: string | null
+          property_id: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: number
+          message?: string | null
+          name: string
+          phone?: string | null
+          property_id: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: number
+          message?: string | null
+          name?: string
+          phone?: string | null
+          property_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_interests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_price_history: {
         Row: {
           bathrooms: number
