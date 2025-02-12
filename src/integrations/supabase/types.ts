@@ -9,6 +9,38 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      comment_responses: {
+        Row: {
+          comment_id: number | null
+          created_at: string
+          id: number
+          response_text: string
+          updated_at: string
+        }
+        Insert: {
+          comment_id?: number | null
+          created_at?: string
+          id?: number
+          response_text: string
+          updated_at?: string
+        }
+        Update: {
+          comment_id?: number | null
+          created_at?: string
+          id?: number
+          response_text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_responses_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "property_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       properties: {
         Row: {
           bathrooms: number
@@ -56,6 +88,56 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      property_comments: {
+        Row: {
+          client_name: string
+          comment_text: string
+          created_at: string
+          id: number
+          is_priority: boolean | null
+          is_reviewed: boolean | null
+          keywords: string[] | null
+          property_id: number | null
+          sentiment: Database["public"]["Enums"]["sentiment_type"]
+          source: Database["public"]["Enums"]["comment_source"]
+          updated_at: string
+        }
+        Insert: {
+          client_name: string
+          comment_text: string
+          created_at?: string
+          id?: number
+          is_priority?: boolean | null
+          is_reviewed?: boolean | null
+          keywords?: string[] | null
+          property_id?: number | null
+          sentiment: Database["public"]["Enums"]["sentiment_type"]
+          source: Database["public"]["Enums"]["comment_source"]
+          updated_at?: string
+        }
+        Update: {
+          client_name?: string
+          comment_text?: string
+          created_at?: string
+          id?: number
+          is_priority?: boolean | null
+          is_reviewed?: boolean | null
+          keywords?: string[] | null
+          property_id?: number | null
+          sentiment?: Database["public"]["Enums"]["sentiment_type"]
+          source?: Database["public"]["Enums"]["comment_source"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_comments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       property_price_history: {
         Row: {
@@ -120,7 +202,8 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      comment_source: "google" | "social_media" | "internal_form"
+      sentiment_type: "positive" | "neutral" | "negative"
     }
     CompositeTypes: {
       [_ in never]: never
