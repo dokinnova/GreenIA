@@ -57,12 +57,67 @@ export type Database = {
         }
         Relationships: []
       }
+      property_price_history: {
+        Row: {
+          bathrooms: number
+          bedrooms: number
+          date: string
+          has_garden: boolean | null
+          id: number
+          location: string
+          price: number
+          property_id: number | null
+          size: number
+        }
+        Insert: {
+          bathrooms: number
+          bedrooms: number
+          date?: string
+          has_garden?: boolean | null
+          id?: number
+          location: string
+          price: number
+          property_id?: number | null
+          size: number
+        }
+        Update: {
+          bathrooms?: number
+          bedrooms?: number
+          date?: string
+          has_garden?: boolean | null
+          id?: number
+          location?: string
+          price?: number
+          property_id?: number | null
+          size?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_price_history_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_price_trends: {
+        Args: {
+          location_param: string
+          start_date: string
+          end_date: string
+        }
+        Returns: {
+          average_price: number
+          price_change_percentage: number
+          date_group: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
